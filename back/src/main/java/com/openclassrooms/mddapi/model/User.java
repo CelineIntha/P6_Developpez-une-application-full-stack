@@ -1,10 +1,14 @@
 package com.openclassrooms.mddapi.model;
 
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 
 @Entity
 @Table(name = "users")
@@ -29,10 +33,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    // 🔹 Constructeur par défaut
     public User() {}
 
-    // 🔹 Constructeur avec tous les champs
     public User(Long id, String email, String username, String password) {
         this.id = id;
         this.email = email;
@@ -40,7 +42,6 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    // 🔹 Getters et Setters
     public Long getId() {
         return id;
     }
@@ -97,10 +98,9 @@ public class User implements UserDetails {
         this.comments = comments;
     }
 
-    // 🔹 Implémentation de UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList(); // Pas de rôles
+        return Collections.emptyList();
     }
 
     @Override

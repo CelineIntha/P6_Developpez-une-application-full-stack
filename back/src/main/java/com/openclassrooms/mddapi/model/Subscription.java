@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "subscriptions")
