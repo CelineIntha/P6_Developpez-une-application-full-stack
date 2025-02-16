@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -58,6 +57,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -66,6 +66,7 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -97,6 +98,8 @@ public class User implements UserDetails {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    // Implémentations des méthodes de UserDetails
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
