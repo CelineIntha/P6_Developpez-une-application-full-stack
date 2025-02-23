@@ -1,8 +1,14 @@
 package com.openclassrooms.mddapi.controllers;
 
+import com.openclassrooms.mddapi.dto.auth.LoginUserDto;
+import com.openclassrooms.mddapi.dto.auth.RegisterUserDto;
+import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
 import com.openclassrooms.mddapi.model.User;
+import com.openclassrooms.mddapi.responses.LoginResponse;
+import com.openclassrooms.mddapi.responses.SuccessResponse;
 import com.openclassrooms.mddapi.services.JwtService;
 import com.openclassrooms.mddapi.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,28 +36,49 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
-        if (userService.existsByEmail(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email déjà utilisé");
+    public ResponseEntity<SuccessResponse> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
+        if (userService.existsByEmail(registerUserDto.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new SuccessResponse(HttpStatus.BAD_REQUEST.value(), "Email déjà utilisé"));
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (userService.existsByUsername(registerUserDto.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new SuccessResponse(HttpStatus.BAD_REQUEST.value(), "Nom d'utilisateur déjà pris"));
+        }
+
+        User user = new User();
+        user.setEmail(registerUserDto.getEmail());
+        user.setUsername(registerUserDto.getUsername());
+        user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
+
         userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Inscription réussie");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new SuccessResponse(HttpStatus.CREATED.value(), "Inscription réussie"));
     }
 
+
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
+    public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+                    new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(), loginUserDto.getPassword())
             );
 
-            UserDetails userDetails = userService.loadUserByUsername(user.getEmail());
-            String token = jwtService.generateToken(userDetails);
+            UserDetails userDetails = userService.loadUserByUsername(loginUserDto.getEmail());
+            String jwtToken = jwtService.generateToken(userDetails);
+            long expiresIn = jwtService.getExpirationTime();
 
-            return ResponseEntity.ok(token);
+            LoginResponse loginResponse = new LoginResponse()
+                    .setToken(jwtToken)
+                    .setExpiresIn(expiresIn);
+
+            return ResponseEntity.ok(loginResponse);
+
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou mot de passe incorrect");
+            throw new UnauthorizedException("Email ou mot de passe incorrect");
         }
     }
 }
