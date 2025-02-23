@@ -24,8 +24,9 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByEmail(email);
     }
 
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         userRepository.save(user);
+        return user;
     }
 
     public User findByEmail(String email) {
@@ -36,4 +37,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'ID : " + id));
     }
+
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
 }
