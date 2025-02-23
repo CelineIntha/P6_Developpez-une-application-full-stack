@@ -24,7 +24,6 @@ public class Topic {
         this.name = name;
     }
 
-    // 🔹 Getters et Setters
     public Long getId() {
         return id;
     }
