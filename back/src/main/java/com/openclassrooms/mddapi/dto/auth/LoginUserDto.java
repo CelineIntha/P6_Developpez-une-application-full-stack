@@ -1,31 +1,17 @@
 package com.openclassrooms.mddapi.dto.auth;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-
 public class LoginUserDto {
+    @NotBlank(message = "Le nom d'utilisateur ou l'email est requis")
+    private String usernameOrEmail;
 
-    @Email(message = "L'adresse email doit être valide")
-    @NotBlank(message = "L'email est obligatoire")
-    private String email;
-
-    @NotBlank(message = "Le mot de passe est obligatoire")
+    @NotBlank(message = "Le mot de passe est requis")
     private String password;
 
-    public String getEmail() {
-        return email;
-    }
+    public String getUsernameOrEmail() { return usernameOrEmail; }
+    public void setUsernameOrEmail(String usernameOrEmail) { this.usernameOrEmail = usernameOrEmail; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

@@ -17,7 +17,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -63,11 +66,24 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
         try {
+            String usernameOrEmail = loginUserDto.getUsernameOrEmail();
+            User user;
+
+            if (usernameOrEmail.contains("@")) {
+                user = userService.findByEmail(usernameOrEmail);
+            } else {
+                user = userService.findByUsername(usernameOrEmail);
+            }
+
+            if (user == null) {
+                throw new UnauthorizedException("Nom d'utilisateur, email ou mot de passe incorrect");
+            }
+
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(), loginUserDto.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), loginUserDto.getPassword())
             );
 
-            UserDetails userDetails = userService.loadUserByUsername(loginUserDto.getEmail());
+            UserDetails userDetails = userService.loadUserByUsername(user.getEmail());
             String jwtToken = jwtService.generateToken(userDetails);
             long expiresIn = jwtService.getExpirationTime();
 
@@ -78,7 +94,8 @@ public class AuthController {
             return ResponseEntity.ok(loginResponse);
 
         } catch (AuthenticationException e) {
-            throw new UnauthorizedException("Email ou mot de passe incorrect");
+            throw new UnauthorizedException("Nom d'utilisateur, email ou mot de passe incorrect");
         }
     }
+
 }
