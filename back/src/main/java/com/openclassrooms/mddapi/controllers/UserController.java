@@ -1,7 +1,10 @@
 package com.openclassrooms.mddapi.controllers;
 
 import com.openclassrooms.mddapi.dto.users.UpdateUserDto;
+import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
+import com.openclassrooms.mddapi.exceptions.NotFoundException;
 import com.openclassrooms.mddapi.model.User;
+import com.openclassrooms.mddapi.responses.TopicResponse;
 import com.openclassrooms.mddapi.responses.UserResponse;
 import com.openclassrooms.mddapi.services.JwtService;
 import com.openclassrooms.mddapi.services.UserService;
@@ -13,12 +16,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -37,21 +45,38 @@ public class UserController {
      */
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails,
-                                                       @RequestHeader("Authorization") String authHeader) {
-        if (userDetails == null || authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+                                                       @RequestHeader(value = "Authorization", required = false) String authHeader) {
+        logger.info("Requête reçue sur /me");
+
+        if (userDetails == null) {
+            logger.warn("Utilisateur non authentifié");
+            throw new UnauthorizedException("Utilisateur non authentifié.");
+        }
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.warn("Token non valide ou absent");
+            throw new UnauthorizedException("Token invalide ou absent.");
         }
 
         String token = authHeader.substring(7);
         String email = jwtService.extractUsername(token);
+        logger.info("Email extrait du token: {}", email);
 
         User user = userService.findByEmail(email);
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            logger.warn("Utilisateur non trouvé avec l'email: {}", email);
+            throw new NotFoundException("Utilisateur non trouvé.");
         }
 
-        return ResponseEntity.ok(new UserResponse(user.getId(), user.getEmail(), user.getUsername()));
+        List<TopicResponse> subscribedTopics = user.getSubscriptions().stream()
+                .map(subscription -> new TopicResponse(subscription.getTopic().getId(), subscription.getTopic().getName()))
+                .toList();
+
+        logger.info("Utilisateur {} trouvé avec {} abonnements", user.getUsername(), subscribedTopics.size());
+
+        return ResponseEntity.ok(new UserResponse(user.getId(), user.getEmail(), user.getUsername(), subscribedTopics));
     }
+
 
     /**
      * Permet à l'utilisateur de mettre à jour ses informations (email, username, mot de passe).
@@ -60,16 +85,16 @@ public class UserController {
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal UserDetails userDetails,
                                         @RequestBody @Valid UpdateUserDto userDTO) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Utilisateur non authentifié.");
+            throw new UnauthorizedException("Utilisateur non authentifié.");
         }
 
         String usernameOrEmail = userDetails.getUsername();
-        System.out.println("Identifiant extrait du token : " + usernameOrEmail);
+        logger.info("Identifiant extrait du token : " + usernameOrEmail);
 
         User user = usernameOrEmail.contains("@") ? userService.findByEmail(usernameOrEmail) : userService.findByUsername(usernameOrEmail);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé.");
+            throw new NotFoundException("Utilisateur non trouvé.");
         }
 
         boolean emailChanged = false;
@@ -104,6 +129,4 @@ public class UserController {
                         "token", newToken
                 ));
     }
-
-
 }
