@@ -3,7 +3,6 @@ package com.openclassrooms.mddapi.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -32,10 +31,6 @@ public class User implements UserDetails {
     @NotBlank(message = "Le mot de passe est obligatoire")
     @Column(nullable = false, length = 255)
     @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères.")
-    @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$",
-            message = "Le mot de passe doit contenir au moins un chiffre, une lettre minuscule, une lettre majuscule et un caractère spécial."
-    )
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
