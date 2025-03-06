@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Instant;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -88,14 +90,18 @@ public class AuthController {
             long expiresIn = jwtService.getExpirationTime();
 
             LoginResponse loginResponse = new LoginResponse()
+                    .setStatus(HttpStatus.OK.value())
+                    .setMessage("Connexion réussie")
                     .setToken(jwtToken)
-                    .setExpiresIn(expiresIn);
+                    .setExpiresIn(expiresIn)
+                    .setTimestamp(Instant.now());
 
-            return ResponseEntity.ok(loginResponse);
+            return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
 
         } catch (AuthenticationException e) {
             throw new UnauthorizedException("Nom d'utilisateur, email ou mot de passe incorrect");
         }
     }
+
 
 }
