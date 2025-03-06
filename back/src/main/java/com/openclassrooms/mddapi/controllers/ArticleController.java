@@ -6,9 +6,11 @@ import com.openclassrooms.mddapi.model.Article;
 import com.openclassrooms.mddapi.model.Comment;
 import com.openclassrooms.mddapi.responses.ArticleResponse;
 import com.openclassrooms.mddapi.responses.CommentResponse;
+import com.openclassrooms.mddapi.responses.SuccessResponse;
 import com.openclassrooms.mddapi.services.ArticleService;
 import com.openclassrooms.mddapi.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +33,7 @@ public class ArticleController {
      * Permet de récupérer tous les articles.
      */
     @GetMapping
-    public ResponseEntity<List<ArticleResponse>> getAllArticles() {
+    public ResponseEntity<?> getAllArticles() {
         List<ArticleResponse> articles = articleService.getAllArticles().stream()
                 .map(article -> new ArticleResponse(
                         article.getId(),
@@ -48,6 +50,10 @@ public class ArticleController {
                                         comment.getCreatedAt()))
                                 .collect(Collectors.toList())
                 )).collect(Collectors.toList());
+
+        if (articles.isEmpty()) {
+            return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), "Aucun article trouvé."));
+        }
 
         return ResponseEntity.ok(articles);
     }
@@ -76,39 +82,43 @@ public class ArticleController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ArticleResponse> getArticleById(@PathVariable Long id) {
-        return articleService.getArticleById(id)
-                .map(article -> ResponseEntity.ok(new ArticleResponse(
-                        article.getId(),
-                        article.getTitle(),
-                        article.getContent(),
-                        article.getCreatedAt(),
-                        article.getAuthor().getUsername(),
-                        article.getTopic().getName(),
-                        article.getComments().stream()
-                                .map(comment -> new CommentResponse(
-                                        comment.getId(),
-                                        comment.getContent(),
-                                        comment.getAuthor().getUsername(),
-                                        comment.getCreatedAt()))
-                                .collect(Collectors.toList())
-                )))
-                .orElse(ResponseEntity.notFound().build());
+        Article article = articleService.getArticleById(id);
+
+        ArticleResponse articleResponse = new ArticleResponse(
+                article.getId(),
+                article.getTitle(),
+                article.getContent(),
+                article.getCreatedAt(),
+                article.getAuthor().getUsername(),
+                article.getTopic().getName(),
+                article.getComments().stream()
+                        .map(comment -> new CommentResponse(
+                                comment.getId(),
+                                comment.getContent(),
+                                comment.getAuthor().getUsername(),
+                                comment.getCreatedAt()))
+                        .collect(Collectors.toList())
+        );
+
+        return ResponseEntity.ok(articleResponse);
     }
+
 
     /**
      * Permet d'ajouter un commentaire à un article.
      */
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentResponse> addComment(@PathVariable Long id,
+    public ResponseEntity<SuccessResponse> addComment(@PathVariable Long id,
                                                       @RequestBody CommentDto commentDto,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Comment comment = commentService.addComment(id, commentDto, userDetails.getUsername());
 
-        return ResponseEntity.ok(new CommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getAuthor().getUsername(),
-                comment.getCreatedAt()
-        ));
+        SuccessResponse response = new SuccessResponse(
+                HttpStatus.CREATED.value(),
+                "Commentaire ajouté à l'article avec l'ID: " + id
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 }

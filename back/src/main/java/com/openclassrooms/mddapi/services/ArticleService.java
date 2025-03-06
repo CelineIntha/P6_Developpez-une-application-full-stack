@@ -1,20 +1,24 @@
 package com.openclassrooms.mddapi.services;
 
 import com.openclassrooms.mddapi.dto.articles.ArticleDto;
+import com.openclassrooms.mddapi.exceptions.NotFoundException;
 import com.openclassrooms.mddapi.model.Article;
 import com.openclassrooms.mddapi.model.Topic;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.ArticleRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ArticleService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ArticleService.class);
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -35,8 +39,12 @@ public class ArticleService {
     /**
      * Récupère un article
      */
-    public Optional<Article> getArticleById(Long id) {
-        return articleRepository.findById(id);
+    public Article getArticleById(Long id) {
+        return articleRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Article non trouvé avec l'ID : {}", id);
+                    return new NotFoundException("Article non trouvé avec l'ID : " + id);
+                });
     }
 
     /**
@@ -44,10 +52,10 @@ public class ArticleService {
      */
     public Article createArticle(ArticleDto articleDto, String username) {
         User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
 
         Topic topic = topicRepository.findById(articleDto.getTopicId())
-                .orElseThrow(() -> new RuntimeException("Thème non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Thème non trouvé"));
 
         Article article = new Article();
         article.setTitle(articleDto.getTitle());
@@ -55,6 +63,7 @@ public class ArticleService {
         article.setAuthor(author);
         article.setTopic(topic);
 
+        logger.info("Article créé avec succès : {}", article.getTitle());
         return articleRepository.save(article);
     }
 }
