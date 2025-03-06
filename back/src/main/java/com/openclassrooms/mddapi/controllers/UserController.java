@@ -4,8 +4,7 @@ import com.openclassrooms.mddapi.dto.users.UpdateUserDto;
 import com.openclassrooms.mddapi.exceptions.UnauthorizedException;
 import com.openclassrooms.mddapi.exceptions.NotFoundException;
 import com.openclassrooms.mddapi.model.User;
-import com.openclassrooms.mddapi.responses.TopicResponse;
-import com.openclassrooms.mddapi.responses.UserResponse;
+import com.openclassrooms.mddapi.responses.*;
 import com.openclassrooms.mddapi.services.JwtService;
 import com.openclassrooms.mddapi.services.UserService;
 import jakarta.validation.Valid;
@@ -19,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -74,8 +73,18 @@ public class UserController {
 
         logger.info("Utilisateur {} trouvé avec {} abonnements", user.getUsername(), subscribedTopics.size());
 
-        return ResponseEntity.ok(new UserResponse(user.getId(), user.getEmail(), user.getUsername(), subscribedTopics));
+        UserResponse response = new UserResponse(
+                HttpStatus.OK.value(),
+                "Informations utilisateur récupérées avec succès",
+                user.getId(),
+                user.getEmail(),
+                user.getUsername(),
+                subscribedTopics
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
 
     /**
@@ -84,49 +93,64 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal UserDetails userDetails,
                                         @RequestBody @Valid UpdateUserDto userDTO) {
-        if (userDetails == null) {
-            throw new UnauthorizedException("Utilisateur non authentifié.");
-        }
-
-        String usernameOrEmail = userDetails.getUsername();
-        logger.info("Identifiant extrait du token : " + usernameOrEmail);
-
-        User user = usernameOrEmail.contains("@") ? userService.findByEmail(usernameOrEmail) : userService.findByUsername(usernameOrEmail);
-
-        if (user == null) {
-            throw new NotFoundException("Utilisateur non trouvé.");
-        }
-
-        boolean emailChanged = false;
-
-        if (userDTO.getUsername() != null && !userDTO.getUsername().equals(user.getUsername())) {
-            if (userService.existsByUsername(userDTO.getUsername())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Ce nom d'utilisateur est déjà pris.");
+        try {
+            if (userDetails == null) {
+                throw new UnauthorizedException("Utilisateur non authentifié.");
             }
-            user.setUsername(userDTO.getUsername());
-        }
 
-        if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail())) {
-            if (userService.existsByEmail(userDTO.getEmail())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Cet email est déjà utilisé.");
+            String usernameOrEmail = userDetails.getUsername();
+            logger.info("Identifiant extrait du token : {}", usernameOrEmail);
+
+            User user = usernameOrEmail.contains("@") ? userService.findByEmail(usernameOrEmail) : userService.findByUsername(usernameOrEmail);
+
+            if (user == null) {
+                throw new NotFoundException("Utilisateur non trouvé.");
             }
-            user.setEmail(userDTO.getEmail());
-            emailChanged = true;
+
+            boolean emailChanged = false;
+
+            if (userDTO.getUsername() != null && !userDTO.getUsername().equals(user.getUsername())) {
+                if (userService.existsByUsername(userDTO.getUsername())) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                            new ErrorResponse(HttpStatus.CONFLICT.value(), "Ce nom d'utilisateur est déjà pris.", LocalDateTime.now())
+                    );
+                }
+                user.setUsername(userDTO.getUsername());
+            }
+
+            if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail())) {
+                if (userService.existsByEmail(userDTO.getEmail())) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                            new ErrorResponse(HttpStatus.CONFLICT.value(), "Cet email est déjà utilisé.", LocalDateTime.now())
+                    );
+                }
+                user.setEmail(userDTO.getEmail());
+                emailChanged = true;
+            }
+
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
+
+            userService.saveUser(user);
+
+            String newToken = emailChanged ? jwtService.generateToken(user) : null;
+
+            return ResponseEntity.ok(
+                    new UpdateUserResponse(
+                            HttpStatus.OK.value(),
+                            "Mise à jour réussie" + (emailChanged ? ". Utilisez le nouveau token pour vos prochaines requêtes." : ""),
+                            newToken
+                    )
+            );
+
+        } catch (Exception e) {
+            logger.error("Erreur lors de la mise à jour de l'utilisateur : ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Une erreur interne est survenue.", LocalDateTime.now())
+            );
         }
-
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        }
-
-        User updatedUser = userService.saveUser(user);
-
-        String newToken = emailChanged ? jwtService.generateToken(updatedUser) : null;
-
-        return ResponseEntity.ok()
-                .header("Authorization", newToken != null ? "Bearer " + newToken : "")
-                .body(Map.of(
-                        "message", "Mise à jour réussie" + (emailChanged ? ". Utilisez le nouveau token pour vos prochaines requêtes." : ""),
-                        "token", newToken
-                ));
     }
+
+
 }
