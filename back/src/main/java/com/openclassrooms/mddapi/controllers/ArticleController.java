@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Tag(name = "Articles", description = "Gestion des articles : création, récupération d'un article, et ajout de commentaires")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/articles")
-@SecurityRequirement(name = "bearerAuth")
 public class ArticleController {
 
     @Autowired
@@ -48,6 +50,8 @@ public class ArticleController {
     public ResponseEntity<?> getAllArticles() {
         List<ArticleResponse> articles = articleService.getAllArticles().stream()
                 .map(article -> new ArticleResponse(
+                        HttpStatus.OK.value(),
+                        "Article récupéré avec succès",
                         article.getId(),
                         article.getTitle(),
                         article.getContent(),
@@ -91,6 +95,8 @@ public class ArticleController {
         Article article = articleService.createArticle(articleDto, userDetails.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ArticleResponse(
+                HttpStatus.CREATED.value(),
+                "Article ajouté avec succès",
                 article.getId(),
                 article.getTitle(),
                 article.getContent(),
@@ -116,6 +122,8 @@ public class ArticleController {
         Article article = articleService.getArticleById(id);
 
         ArticleResponse articleResponse = new ArticleResponse(
+                HttpStatus.OK.value(),
+                "Article récupéré avec succès",
                 article.getId(),
                 article.getTitle(),
                 article.getContent(),
@@ -137,24 +145,27 @@ public class ArticleController {
     /**
      * Permet d'ajouter un commentaire à un article.
      */
+    @PostMapping("/{id}/comments")
     @Operation(summary = "Ajouter un commentaire à un article", description = "Ajoute un commentaire sous un article spécifique. Nécessite une authentification.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Commentaire ajouté avec succès"),
             @ApiResponse(responseCode = "401", description = "Non autorisé - Token JWT requis"),
             @ApiResponse(responseCode = "404", description = "Article non trouvé")
     })
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<SuccessResponse> addComment(@PathVariable Long id,
+    public ResponseEntity<CommentResponse> addComment(@PathVariable Long id,
                                                       @RequestBody CommentDto commentDto,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Comment comment = commentService.addComment(id, commentDto, userDetails.getUsername());
 
-        SuccessResponse response = new SuccessResponse(
-                HttpStatus.CREATED.value(),
-                "Commentaire ajouté à l'article avec l'ID: " + id
+        CommentResponse response = new CommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getAuthor().getUsername(),
+                comment.getCreatedAt()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
 }
