@@ -8,6 +8,10 @@ import com.openclassrooms.mddapi.responses.LoginResponse;
 import com.openclassrooms.mddapi.responses.SuccessResponse;
 import com.openclassrooms.mddapi.services.JwtService;
 import com.openclassrooms.mddapi.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,13 +21,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 
+@Tag(name = "Authentification", description = "Gestion de l'inscription, de la connexion et de l'authentification des utilisateurs")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -41,6 +43,11 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
+    @Operation(summary = "Inscription d'un utilisateur", description = "Permet à un utilisateur de créer un compte.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Inscription réussie"),
+            @ApiResponse(responseCode = "400", description = "Email ou nom d'utilisateur déjà utilisé, ou mot de passe non conforme")
+    })
     public ResponseEntity<SuccessResponse> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
         if (userService.existsByEmail(registerUserDto.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -65,6 +72,14 @@ public class AuthController {
 
 
 
+    /**
+     * Permet d'authentifier un utilisateur et d'obtenir un token JWT.
+     */
+    @Operation(summary = "Connexion d'un utilisateur", description = "Permet à un utilisateur de s'authentifier avec son email ou nom d'utilisateur et son mot de passe. Retourne un token JWT.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Connexion réussie"),
+            @ApiResponse(responseCode = "401", description = "Nom d'utilisateur, email ou mot de passe incorrect")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
         try {
@@ -102,5 +117,4 @@ public class AuthController {
             throw new UnauthorizedException("Nom d'utilisateur, email ou mot de passe incorrect");
         }
     }
-
 }
