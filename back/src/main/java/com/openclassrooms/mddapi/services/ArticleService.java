@@ -55,7 +55,7 @@ public class ArticleService {
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
 
         Topic topic = topicRepository.findById(articleDto.getTopicId())
-                .orElseThrow(() -> new NotFoundException("Thème non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Thème ou topic non trouvé"));
 
         Article article = new Article();
         article.setTitle(articleDto.getTitle());
