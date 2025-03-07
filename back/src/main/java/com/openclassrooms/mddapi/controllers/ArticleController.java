@@ -145,23 +145,21 @@ public class ArticleController {
     /**
      * Permet d'ajouter un commentaire à un article.
      */
-    @PostMapping("/{id}/comments")
     @Operation(summary = "Ajouter un commentaire à un article", description = "Ajoute un commentaire sous un article spécifique. Nécessite une authentification.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Commentaire ajouté avec succès"),
             @ApiResponse(responseCode = "401", description = "Non autorisé - Token JWT requis"),
             @ApiResponse(responseCode = "404", description = "Article non trouvé")
     })
-    public ResponseEntity<CommentResponse> addComment(@PathVariable Long id,
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<SuccessResponse> addComment(@PathVariable Long id,
                                                       @RequestBody CommentDto commentDto,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Comment comment = commentService.addComment(id, commentDto, userDetails.getUsername());
 
-        CommentResponse response = new CommentResponse(
-                comment.getId(),
-                comment.getContent(),
-                comment.getAuthor().getUsername(),
-                comment.getCreatedAt()
+        SuccessResponse response = new SuccessResponse(
+                HttpStatus.CREATED.value(),
+                "Commentaire ajouté à l'article avec l'ID: " + id
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
