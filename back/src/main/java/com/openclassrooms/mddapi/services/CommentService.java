@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class CommentService {
@@ -37,7 +36,10 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
 
         Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new NotFoundException("Article non trouvé"));
+                .orElseThrow(() -> {
+                    logger.warn("Tentative d'ajout de commentaire sur un article inexistant, ID : {}", articleId);
+                    return new NotFoundException("Article non trouvé");
+                });
 
         Comment comment = new Comment();
         comment.setContent(commentDto.getContent());
@@ -48,13 +50,4 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    /**
-     * Récupère tous les commentaires d’un article.
-     */
-    public List<Comment> getCommentsByArticle(Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new NotFoundException("Article non trouvé"));
-
-        return commentRepository.findByArticleOrderByCreatedAtAsc(article);
-    }
 }

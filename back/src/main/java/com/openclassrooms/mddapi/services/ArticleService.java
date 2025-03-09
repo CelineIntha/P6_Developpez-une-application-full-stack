@@ -52,10 +52,17 @@ public class ArticleService {
      */
     public Article createArticle(ArticleDto articleDto, String username) {
         User author = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> {
+                    logger.warn("Utilisateur non trouvé pour la création d'un article : {}", username);
+                    return new NotFoundException("Utilisateur non trouvé");
+                });
 
         Topic topic = topicRepository.findById(articleDto.getTopicId())
-                .orElseThrow(() -> new NotFoundException("Thème non trouvé"));
+                .orElseThrow(() -> {
+                    logger.warn("Thème non trouvé pour la création d'un article, ID : {}", articleDto.getTopicId());
+                    return new NotFoundException("Thème ou topic non trouvé");
+                });
+
 
         Article article = new Article();
         article.setTitle(articleDto.getTitle());
