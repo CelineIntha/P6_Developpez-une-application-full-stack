@@ -76,10 +76,6 @@ public class UserController {
         logger.info("Email extrait du token: {}", email);
 
         User user = userService.findByEmail(email);
-        if (user == null) {
-            logger.warn("Utilisateur non trouvé avec l'email: {}", email);
-            throw new NotFoundException("Utilisateur non trouvé.");
-        }
 
         List<TopicResponse> subscribedTopics = user.getSubscriptions().stream()
                 .map(subscription -> new TopicResponse(subscription.getTopic().getId(), subscription.getTopic().getName()))
@@ -94,7 +90,7 @@ public class UserController {
                 subscribedTopics
         );
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -102,15 +98,15 @@ public class UserController {
     /**
      * Permet à l'utilisateur de mettre à jour ses informations (email, username, mot de passe).
      */
-    @PutMapping("/update")
-    @Operation(summary = "Mettre à jour les informations de l'utilisateur",
-            description = "Permet à l'utilisateur de modifier son email, son nom d'utilisateur ou son mot de passe.")
+    @Operation(summary = "Mettre à jour les informations de l'utilisateur", description = "Permet à l'utilisateur de modifier son email, son nom d'utilisateur ou son mot de passe.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Mise à jour réussie"),
+            @ApiResponse(responseCode = "200", description = "Mise à jour réussie (si l'email change, retourne un nouveau token)"),
+            @ApiResponse(responseCode = "204", description = "Mise à jour réussie (aucun contenu retourné)"),
             @ApiResponse(responseCode = "400", description = "Requête invalide"),
             @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis"),
             @ApiResponse(responseCode = "409", description = "Email ou nom d'utilisateur déjà pris"),
     })
+    @PutMapping("/update")
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal UserDetails userDetails,
                                         @RequestBody @Valid UpdateUserDto userDTO) {
         try {
@@ -154,15 +150,12 @@ public class UserController {
 
             userService.saveUser(user);
 
-            String newToken = emailChanged ? jwtService.generateToken(user) : null;
+            if (emailChanged) {
+                String newToken = jwtService.generateToken(user);
+                return ResponseEntity.ok(new UpdateUserResponse(newToken));
+            }
 
-            return ResponseEntity.ok(
-                    new UpdateUserResponse(
-                            HttpStatus.OK.value(),
-                            "Mise à jour réussie" + (emailChanged ? ". Utilisez le nouveau token pour vos prochaines requêtes." : ""),
-                            newToken
-                    )
-            );
+            return ResponseEntity.noContent().build();
 
         } catch (Exception e) {
             logger.error("Erreur lors de la mise à jour de l'utilisateur : ", e);

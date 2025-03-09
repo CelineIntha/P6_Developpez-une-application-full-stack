@@ -3,7 +3,6 @@ package com.openclassrooms.mddapi.controllers;
 import com.openclassrooms.mddapi.dto.subscriptions.SubscriptionDto;
 import com.openclassrooms.mddapi.model.Subscription;
 import com.openclassrooms.mddapi.responses.SubscriptionResponse;
-import com.openclassrooms.mddapi.responses.SuccessResponse;
 import com.openclassrooms.mddapi.services.SubscriptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,8 +48,7 @@ public class SubscriptionController {
                 .collect(Collectors.toList());
 
         if (subscriptions.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new SuccessResponse(HttpStatus.OK.value(), "Aucun abonnement trouvé."));
+            return ResponseEntity.ok(List.of());
         }
 
         return ResponseEntity.ok(subscriptions);
@@ -67,43 +65,35 @@ public class SubscriptionController {
             @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponse> subscribeToTopic(@RequestBody SubscriptionDto subscriptionDto,
-                                                            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<SubscriptionResponse> subscribeToTopic(@RequestBody SubscriptionDto subscriptionDto,
+                                                                 @AuthenticationPrincipal UserDetails userDetails) {
         Subscription subscription = subscriptionService.subscribeToTopic(subscriptionDto, userDetails.getUsername());
 
-        SubscriptionResponse subscriptionResponse = new SubscriptionResponse(
+        SubscriptionResponse response = new SubscriptionResponse(
                 subscription.getId(),
                 subscription.getTopic().getId(),
                 subscription.getTopic().getName()
         );
 
-        SuccessResponse response = new SuccessResponse(
-                HttpStatus.CREATED.value(),
-                "Abonnement réussi sur le thème " + subscriptionResponse.getTopicName()
-        );
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     /**
      * Se désabonner d’un thème.
      */
     @Operation(summary = "Se désabonner d'un thème", description = "Permet à l'utilisateur de se désabonner d'un thème spécifique.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Désabonnement réussi"),
+            @ApiResponse(responseCode = "204", description = "Désabonnement réussi (aucun contenu retourné)"),
             @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis"),
             @ApiResponse(responseCode = "404", description = "Thème non trouvé ou non abonné")
     })
     @DeleteMapping("/{topicId}")
-    public ResponseEntity<SuccessResponse> unsubscribeFromTopic(@PathVariable Long topicId,
-                                                                @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Void> unsubscribeFromTopic(@PathVariable Long topicId,
+                                                     @AuthenticationPrincipal UserDetails userDetails) {
         subscriptionService.unsubscribeFromTopic(topicId, userDetails.getUsername());
 
-        SuccessResponse response = new SuccessResponse(
-                HttpStatus.OK.value(),
-                "Désabonnement réussi du thème avec l'ID : " + topicId
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.noContent().build();
     }
+
 }
