@@ -37,9 +37,9 @@ public class UserService implements UserDetailsService {
     /**
      * Sauvegarde ou met à jour un utilisateur.
      */
-    public User saveUser(User user) {
+    public void saveUser(User user) {
         logger.info("Sauvegarde de l'utilisateur : {}", user.getEmail());
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     /**
@@ -56,14 +56,6 @@ public class UserService implements UserDetailsService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec username : " + username));
-    }
-
-    /**
-     * Recherche un utilisateur par son ID.
-     */
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec l'ID : " + id));
     }
 
     /**

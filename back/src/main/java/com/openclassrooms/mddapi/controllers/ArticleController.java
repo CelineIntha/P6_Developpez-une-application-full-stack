@@ -40,10 +40,8 @@ public class ArticleController {
      */
     @Operation(summary = "Récupérer tous les articles", description = "Retourne la liste de tous les articles disponibles.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste des articles récupérée avec succès"),
-            @ApiResponse(responseCode = "200", description = "Aucun article trouvé"),
-            @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT manquant ou invalide"),
-            @ApiResponse(responseCode = "403", description = "Accès interdit - Permissions insuffisantes")
+            @ApiResponse(responseCode = "200", description = "Liste des articles récupérée avec succès (ou vide si aucun article trouvé)"),
+            @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT manquant ou invalide")
     })
     @GetMapping
     public ResponseEntity<List<ArticleResponse>> getAllArticles() {
@@ -83,7 +81,7 @@ public class ArticleController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Article créé avec succès"),
             @ApiResponse(responseCode = "400", description = "Données invalides"),
-            @ApiResponse(responseCode = "401", description = "Non autorisé - Token JWT requis"),
+            @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis"),
             @ApiResponse(responseCode = "403", description = "Accès interdit - Permissions insuffisantes")
     })
     @PostMapping
@@ -109,8 +107,8 @@ public class ArticleController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Article trouvé"),
             @ApiResponse(responseCode = "404", description = "Article non trouvé"),
-            @ApiResponse(responseCode = "401", description = "Non autorisé - Token JWT requis"),
-            @ApiResponse(responseCode = "403", description = "Accès interdit - Permissions insuffisantes")
+            @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis"),
+            @ApiResponse(responseCode = "403", description = "Accès interdit - Token JWT requis ou permissions insuffisantes")
     })
     @GetMapping("/{id}")
     public ResponseEntity<ArticleResponse> getArticleById(@PathVariable Long id) {
