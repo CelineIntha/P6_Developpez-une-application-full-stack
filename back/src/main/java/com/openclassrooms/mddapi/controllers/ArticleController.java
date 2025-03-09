@@ -6,7 +6,6 @@ import com.openclassrooms.mddapi.model.Article;
 import com.openclassrooms.mddapi.model.Comment;
 import com.openclassrooms.mddapi.responses.ArticleResponse;
 import com.openclassrooms.mddapi.responses.CommentResponse;
-import com.openclassrooms.mddapi.responses.SuccessResponse;
 import com.openclassrooms.mddapi.services.ArticleService;
 import com.openclassrooms.mddapi.services.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +38,6 @@ public class ArticleController {
     /**
      * Permet de récupérer tous les articles.
      */
-    @GetMapping
     @Operation(summary = "Récupérer tous les articles", description = "Retourne la liste de tous les articles disponibles.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Liste des articles récupérée avec succès"),
@@ -47,11 +45,16 @@ public class ArticleController {
             @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT manquant ou invalide"),
             @ApiResponse(responseCode = "403", description = "Accès interdit - Permissions insuffisantes")
     })
-    public ResponseEntity<?> getAllArticles() {
-        List<ArticleResponse> articles = articleService.getAllArticles().stream()
+    @GetMapping
+    public ResponseEntity<List<ArticleResponse>> getAllArticles() {
+        List<Article> articles = articleService.getAllArticles();
+
+        if (articles.isEmpty()) {
+            return ResponseEntity.ok(List.of());
+        }
+
+        List<ArticleResponse> articleResponses = articles.stream()
                 .map(article -> new ArticleResponse(
-                        HttpStatus.OK.value(),
-                        "Article récupéré avec succès",
                         article.getId(),
                         article.getTitle(),
                         article.getContent(),
@@ -67,15 +70,9 @@ public class ArticleController {
                                 .collect(Collectors.toList())
                 )).collect(Collectors.toList());
 
-        if (articles.isEmpty()) {
-            return ResponseEntity.ok(new SuccessResponse(
-                    HttpStatus.OK.value(),
-                    "Aucun article trouvé."
-            ));
-        }
-
-        return ResponseEntity.ok(articles);
+        return ResponseEntity.ok(articleResponses);
     }
+
 
 
 
@@ -95,8 +92,6 @@ public class ArticleController {
         Article article = articleService.createArticle(articleDto, userDetails.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ArticleResponse(
-                HttpStatus.CREATED.value(),
-                "Article ajouté avec succès",
                 article.getId(),
                 article.getTitle(),
                 article.getContent(),
@@ -122,8 +117,6 @@ public class ArticleController {
         Article article = articleService.getArticleById(id);
 
         ArticleResponse articleResponse = new ArticleResponse(
-                HttpStatus.OK.value(),
-                "Article récupéré avec succès",
                 article.getId(),
                 article.getTitle(),
                 article.getContent(),
@@ -152,18 +145,19 @@ public class ArticleController {
             @ApiResponse(responseCode = "404", description = "Article non trouvé")
     })
     @PostMapping("/{id}/comments")
-    public ResponseEntity<SuccessResponse> addComment(@PathVariable Long id,
+    public ResponseEntity<CommentResponse> addComment(@PathVariable Long id,
                                                       @RequestBody CommentDto commentDto,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Comment comment = commentService.addComment(id, commentDto, userDetails.getUsername());
 
-        SuccessResponse response = new SuccessResponse(
-                HttpStatus.CREATED.value(),
-                "Commentaire ajouté à l'article avec l'ID: " + id
+        CommentResponse response = new CommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getAuthor().getUsername(),
+                comment.getCreatedAt()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
 }
