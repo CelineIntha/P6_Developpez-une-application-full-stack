@@ -88,8 +88,6 @@ public class UserController {
         logger.info("Utilisateur {} trouvé avec {} abonnements", user.getUsername(), subscribedTopics.size());
 
         UserResponse response = new UserResponse(
-                HttpStatus.OK.value(),
-                "Informations utilisateur récupérées avec succès",
                 user.getId(),
                 user.getEmail(),
                 user.getUsername(),
