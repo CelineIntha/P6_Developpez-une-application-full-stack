@@ -9,6 +9,8 @@ import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +28,16 @@ public class SubscriptionService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
+
+
+
     /**
      * Récupérer tous les abonnements d'un utilisateur.
      */
     public List<Subscription> getUserSubscriptions(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
         return subscriptionRepository.findByUser(user);
     }
 
@@ -60,17 +66,27 @@ public class SubscriptionService {
      * Se désabonner d’un thème.
      */
     public void unsubscribeFromTopic(Long topicId, String username) {
+
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé"));
+                .orElseThrow(() -> {
+                    logger.warn("Tentative de désabonnement d'un utilisateur non trouvé : {}", username);
+                    return new NotFoundException("Utilisateur non trouvé");
+                });
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new NotFoundException("Le thème avec l'ID " + topicId + " n'existe pas."));
+                .orElseThrow(() -> {
+                    logger.warn("Tentative de désabonnement d'un thème inexistant, ID : {}", topicId);
+                    return new NotFoundException("Le thème avec l'ID " + topicId + " n'existe pas.");
+                });
 
         Subscription subscription = subscriptionRepository.findByUserAndTopic(user, topic)
-                .orElseThrow(() -> new NotFoundException("L'utilisateur n'est pas abonné à ce thème."));
+                .orElseThrow(() -> {
+                    logger.warn("Tentative de désabonnement d'un thème auquel l'utilisateur {} n'est pas abonné, ID : {}", username, topicId);
+                    return new NotFoundException("L'utilisateur n'est pas abonné à ce thème.");
+                });
 
         subscriptionRepository.delete(subscription);
+        logger.info("Utilisateur {} désabonné du thème avec ID : {}", username, topicId);
     }
-
 
 }
