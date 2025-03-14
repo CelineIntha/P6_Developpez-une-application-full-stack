@@ -1,1 +1,37 @@
-<p>register works!</p>
+<div class="container-fluid">
+  <div class="container">
+    <button mat-icon-button (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
+    </button>
+
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-4 col-12">
+        <div class="d-flex justify-content-center d-lg-none">
+          <img ngSrc="/assets/logo_p6.png" class="img-fluid" alt="logo" [height]="370" [width]="380" priority/>
+        </div>
+
+        <h1 class="text-center mb-5">Inscription</h1>
+
+          <div class="mb-4">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+        <div class="mb-4">
+          <label for="email" class="form-label">Adresse e-mail</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" formControlName="password" id="password" required />
+          </div>
+
+          <div class="row">
+            <div class="col d-flex justify-content-center align-items-center">
+              <button mat-raised-button type="submit" class="btn-submit fw-bold text-white mt-4">S'inscrire</button>
+            </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
