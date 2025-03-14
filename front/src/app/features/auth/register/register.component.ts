@@ -1,13 +1,19 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {MatButton, MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatButton, MatIconButton, NgOptimizedImage],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent { }
+export class RegisterComponent {
+  private router = inject(Router);
+  goBack() {
+    this.router.navigate(['..']);
+  }
+}
