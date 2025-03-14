@@ -1,13 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import {MatButton, MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatButton, MatIconButton, NgOptimizedImage],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -36,5 +37,9 @@ export class LoginComponent {
         }
       });
     }
+  }
+
+  goBack() {
+    this.router.navigate(['..']);
   }
 }
