@@ -1,13 +1,13 @@
 import {Component, inject} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
 import {MatButton, MatIconButton} from "@angular/material/button";
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatButton, MatIconButton, NgOptimizedImage],
+  imports: [CommonModule, ReactiveFormsModule, MatButton, MatIconButton, NgOptimizedImage],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
