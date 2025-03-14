@@ -1,0 +1,8 @@
+<h2>Connexion</h2>
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+  <input type="text" formControlName="usernameOrEmail" placeholder="Email ou Nom d'utilisateur" required />
+  <input type="password" formControlName="password" placeholder="Mot de passe" required />
+  <button type="submit">Se connecter</button>
+</form>
+
+<p>Pas encore inscrit ? <a routerLink="/register">Créer un compte</a></p>
