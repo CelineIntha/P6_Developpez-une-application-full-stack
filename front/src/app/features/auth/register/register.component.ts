@@ -41,7 +41,7 @@ export class RegisterComponent {
     this.errorMessage = null;
 
     // TODO: avoid any
-    const formData = this.registerForm.value;
+    const formData: any = this.registerForm.value;
 
     this.authService.register(formData).subscribe({
       next: (): void => {
