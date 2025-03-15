@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
-import { MatButton, MatIconButton } from "@angular/material/button";
+import {Component, inject} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AuthService} from '../../../core/services/auth.service';
+import {Router} from '@angular/router';
+import {MatButton, MatIconButton} from "@angular/material/button";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent {
   private authService: AuthService = inject(AuthService);
   private fb: FormBuilder = inject(FormBuilder);
   private router: Router = inject(Router);
+  private _snackBar: MatSnackBar = inject(MatSnackBar);
 
   errorMessage: string | null = null;
 
@@ -35,20 +37,17 @@ export class LoginComponent {
 
     this.authService.login(credentials).subscribe({
       next: (): void => {
-        this.router.navigate(['/dashboard']);
+        this.openSnackBar("Authentification réussie !", "OK");
+        setTimeout((): void => {
+          this.router.navigate(['/dashboard']);
+        }, 2000);
       },
       error: (err) => {
         console.error('Erreur de connexion', err);
 
         if (err.error) {
-          if (err.error.status === 401 || err.error.status === 404) {
-            this.errorMessage = err.error.message || "Nom d'utilisateur, email ou mot de passe incorrect.";
-
-            if (err.error.errors) {
-              this.loginForm.setErrors(err.error.errors);
-            }
-            return;
-          }
+          this.errorMessage = err.error.message || "Nom d'utilisateur, email ou mot de passe incorrect.";
+          return;
         }
 
         this.errorMessage = "Une erreur est survenue. Veuillez réessayer plus tard.";
@@ -56,7 +55,16 @@ export class LoginComponent {
     });
   }
 
-  goBack() {
+  openSnackBar(message: string, action: string): void {
+    this._snackBar.open(message, action, {
+      duration: 2000,
+      verticalPosition: 'top',
+      horizontalPosition: 'right',
+    });
+  }
+
+
+  goBack(): void {
     this.router.navigate(['..']);
   }
 }

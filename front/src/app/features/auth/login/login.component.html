@@ -21,7 +21,8 @@
         <form [formGroup]="loginForm" (ngSubmit)="login()">
           <div class="mb-4">
             <label for="usernameOrEmail" class="form-label">Email ou nom d'utilisateur</label>
-            <input type="text" class="form-control" formControlName="usernameOrEmail" id="usernameOrEmail" autocomplete="username" required/>
+            <input type="text" class="form-control" formControlName="usernameOrEmail" id="usernameOrEmail"
+                   autocomplete="username" required/>
 
             @if (loginForm.errors?.['usernameOrEmail']) {
               <div class="text-danger">
@@ -32,7 +33,8 @@
 
           <div class="mb-3">
             <label for="password" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" formControlName="password" id="password" required autocomplete="current-password"/>
+            <input type="password" class="form-control" formControlName="password" id="password" required
+                   autocomplete="current-password"/>
 
             @if (loginForm.errors?.['password']) {
               <div class="text-danger">
@@ -43,7 +45,8 @@
 
           <div class="row">
             <div class="col d-flex justify-content-center align-items-center">
-              <button mat-raised-button type="submit" class="btn-submit fw-bold text-white mt-4" [disabled]="loginForm.invalid">
+              <button mat-raised-button type="submit" class="btn-submit fw-bold text-white mt-4"
+                      [disabled]="loginForm.invalid">
                 Se connecter
               </button>
             </div>
