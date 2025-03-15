@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
-import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
-import {MatButton, MatIconButton} from "@angular/material/button";
+import { MatButton, MatIconButton } from "@angular/material/button";
 
 @Component({
   selector: 'app-login',
@@ -13,30 +13,47 @@ import {MatButton, MatIconButton} from "@angular/material/button";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  private authService: AuthService = inject(AuthService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
 
-  loginForm = new FormGroup({
-    usernameOrEmail: new FormControl<string | null>(''),
-    password: new FormControl<string | null>('')
+  errorMessage: string | null = null;
+
+  loginForm: FormGroup = this.fb.group({
+    usernameOrEmail: ['', [Validators.required]],
+    password: ['', [Validators.required]]
   });
 
-  login() {
-    if (this.loginForm.valid) {
-      const credentials = this.loginForm.getRawValue() as { usernameOrEmail: string; password: string };
-
-      console.log('Tentative de connexion :', credentials);
-
-      this.authService.login(credentials).subscribe({
-        next: (response) => {
-          console.log('Connexion réussie', response);
-          this.router.navigate(['/dashboard']);
-        },
-        error: (err) => {
-          console.error('Erreur de connexion', err);
-        }
-      });
+  login(): void {
+    if (this.loginForm.invalid) {
+      return;
     }
+
+    this.errorMessage = null;
+
+    const credentials = this.loginForm.value;
+
+    this.authService.login(credentials).subscribe({
+      next: (): void => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('Erreur de connexion', err);
+
+        if (err.error) {
+          if (err.error.status === 401 || err.error.status === 404) {
+            this.errorMessage = err.error.message || "Nom d'utilisateur, email ou mot de passe incorrect.";
+
+            if (err.error.errors) {
+              this.loginForm.setErrors(err.error.errors);
+            }
+            return;
+          }
+        }
+
+        this.errorMessage = "Une erreur est survenue. Veuillez réessayer plus tard.";
+      }
+    });
   }
 
   goBack() {
