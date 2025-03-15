@@ -47,7 +47,7 @@ public class UserService implements UserDetailsService {
      */
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec email : " + email));
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec l'email : " + email));
     }
 
     /**
@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
      */
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec username : " + username));
+                .orElseThrow(() -> new NotFoundException("Utilisateur non trouvé avec le nom d'utilisateur : " + username));
     }
 
     /**
