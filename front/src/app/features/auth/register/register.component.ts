@@ -18,46 +18,57 @@ import {AuthService} from "../../../core/services/auth.service";
   standalone: true
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
   errorMessage: string | null = null;
-  private authService = inject(AuthService);
-  private fb = inject(FormBuilder);
-  private router= inject(Router);
+  private authService: AuthService = inject(AuthService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
 
-
-  constructor() {
-    this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$')
-        ]
-      ]
-    });
-  }
+  registerForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+    username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    password: ['', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(255)
+    ]]
+  });
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
       return;
     }
 
+    this.errorMessage = null;
+
+    // TODO: avoid any
     const formData = this.registerForm.value;
+
     this.authService.register(formData).subscribe({
-      next: () => {
+      next: (): void => {
         alert('Inscription réussie');
         this.router.navigate(['/login']);
       },
-      error: (error) => {
-        this.errorMessage = error.error.message || 'Une erreur est survenue lors de l’inscription.';
+      // TODO : avoid any
+      error: (err: any): void => {
+        console.error('Erreur lors de l’inscription', err);
+
+        if (err.error) {
+          if (err.error.status === 400 || err.error.status === 409) {
+            this.errorMessage = err.error.message || "Certains champs sont invalides.";
+
+            if (err.error.errors) {
+              this.registerForm.setErrors(err.error.errors);
+            }
+            return;
+          }
+        }
+
+        this.errorMessage = "Une erreur est survenue lors de l'inscription. Veuillez réessayer plus tard.";
       }
     });
   }
 
-  goBack() {
+  goBack(): void {
     this.router.navigate(['..']);
   }
 }
