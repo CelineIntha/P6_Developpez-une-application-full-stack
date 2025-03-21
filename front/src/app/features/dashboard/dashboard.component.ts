@@ -7,6 +7,8 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {RouterLink} from "@angular/router";
+import {MatTooltip} from "@angular/material/tooltip";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +18,8 @@ import {RouterLink} from "@angular/router";
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    RouterLink
+    RouterLink,
+    MatTooltip
   ],
 
   standalone: true,
@@ -34,30 +37,22 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.articleService.getAllArticles().subscribe({
-      next: (data: ArticleResponse[]) => {
+      next: (data: ArticleResponse[]): void => {
         console.log('Articles reçus :', data);
         this.articles = data;
       },
-      error: (err) => console.error('Erreur récupération articles', err)
+      error: (err: HttpErrorResponse): void => console.error('Erreur récupération articles', err)
     });
   }
 
 
-  setSortOrder(order: 'asc' | 'desc') {
-    this.sortOrder = order;
+  toggleSortOrder(): void {
+    this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
 
     this.articles.sort((a, b) => {
       const dateA = new Date(a.createdAt).getTime();
       const dateB = new Date(b.createdAt).getTime();
-
-      return order === 'asc' ? dateA - dateB : dateB - dateA;
+      return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
   }
-
-
-  logout() {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  }
-
 }

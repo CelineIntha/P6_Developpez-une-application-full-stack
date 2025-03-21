@@ -1,13 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ArticleService } from '../../../core/services/article.service';
-import { ArticleResponse } from '../../../core/models/article-response';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import {Component, inject, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ArticleService} from '../../../core/services/article.service';
+import {ArticleResponse} from '../../../core/models/article-response';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-article-detail',
@@ -24,10 +24,10 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./article-detail.component.scss']
 })
 export class ArticleDetailComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private articleService = inject(ArticleService);
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private articleService: ArticleService = inject(ArticleService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
 
   article: ArticleResponse | null = null;
   commentForm: FormGroup = this.fb.group({
@@ -37,8 +37,8 @@ export class ArticleDetailComponent implements OnInit {
   ngOnInit(): void {
     const id: number = Number(this.route.snapshot.paramMap.get('id'));
     this.articleService.getArticleById(id).subscribe({
-      next: (article: ArticleResponse) => this.article = article,
-      error: () => this.router.navigate(['/dashboard'])
+      next: (article: ArticleResponse): ArticleResponse => this.article = article,
+      error: (): Promise<boolean> => this.router.navigate(['/dashboard'])
     });
   }
 
