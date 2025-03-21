@@ -16,6 +16,10 @@ export class ArticleService {
     return this.http.get<ArticleResponse[]>(`${this.apiUrl}/articles`);
   }
 
+  getArticleById(id: number): Observable<ArticleResponse> {
+    return this.http.get<ArticleResponse>(`${this.apiUrl}/articles/${id}`);
+  }
+
   createArticle(articleData: { title: string; content: string; topicId: number }) {
     return this.http.post<ArticleResponse>(`${this.apiUrl}/articles`, articleData);
   }

@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <button mat-icon-button (click)="goBack()" class="mb-3">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+
+  <div class="border-bottom pb-4 mb-4">
+    <h2 class="fw-bold">{{ article?.title }}</h2>
+    <div class="text-muted mb-2">
+      {{ article?.createdAt | date:'longDate' }} • {{ article?.author }} • {{ article?.topic }}
+    </div>
+    <p>{{ article?.content }}</p>
+  </div>
+
+  <h4 class="fw-bold mb-3">Commentaires</h4>
+
+  @for (comment of article?.comments; track comment) {
+    <div class="mb-3 border-bottom pb-2">
+      <strong>{{ comment.author }}</strong>
+      <p class="mb-1">{{ comment.content }}</p>
+      <small class="text-muted">{{ comment.createdAt | date:'short' }}</small>
+    </div>
+  }
+
+
+  <form (ngSubmit)="submitComment()" [formGroup]="commentForm" class="d-flex align-items-center gap-2 mt-4">
+    <mat-form-field class="flex-grow-1" appearance="outline">
+      <mat-label>Votre commentaire</mat-label>
+      <input matInput formControlName="content" placeholder="Écrivez un message...">
+    </mat-form-field>
+
+    <button mat-icon-button color="primary" type="submit" [disabled]="commentForm.invalid">
+      <mat-icon>send</mat-icon>
+    </button>
+  </form>
+</div>
