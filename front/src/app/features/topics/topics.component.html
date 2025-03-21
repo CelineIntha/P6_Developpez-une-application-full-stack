@@ -1,0 +1,27 @@
+<app-navbar></app-navbar>
+<div class="row g-5 px-3 mt-4">
+  @for (topic of topics; track topic) {
+    <div class="col-12 col-lg-6">
+      <div class="box h-100 p-4 shadow-sm border rounded-3">
+        <h4 class="fw-bold mb-2">{{ topic.name }}</h4>
+
+        <p class="clamp-5 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+          incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+          laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+          esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+          officia deserunt mollit anim id est laborum.</p>
+
+        <div class="btn-container d-flex justify-content-center align-items-center mt-3">
+          <button class="btn border btn-subscribe text-white fw-bold text-center"
+                  [ngClass]="{ 'bg-secondary': isSubscribed(topic.id), '': !isSubscribed(topic.id) }"
+                  (click)="toggleSubscription(topic.id)"
+                  [matTooltip]="isSubscribed(topic.id) ? 'Se désabonner ' : 'S\'abonner'"
+                  [innerHTML]="isSubscribed(topic.id) ? 'Se désabonner' : 'S\'abonner'"
+                  aria-label="Toggle abonnement">
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>
