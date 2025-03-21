@@ -6,6 +6,7 @@ import {DatePipe} from "@angular/common";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,8 @@ import {MatIconModule} from "@angular/material/icon";
     DatePipe,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    RouterLink
   ],
 
   standalone: true,
