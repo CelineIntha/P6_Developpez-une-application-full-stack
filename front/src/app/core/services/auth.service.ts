@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {AuthResponse} from "../models/auth-response";
+import {User} from "../models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,9 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.getToken();
+  }
+
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/users/me`);
   }
 }

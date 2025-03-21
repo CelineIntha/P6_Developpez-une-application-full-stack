@@ -1,7 +1,7 @@
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {ArticleResponse} from '../models/article-response';
+import {Article} from '../models/article';
 import {environment} from '../../../environments/environment';
 
 @Injectable({
@@ -9,19 +9,18 @@ import {environment} from '../../../environments/environment';
 })
 export class ArticleService {
   private http = inject(HttpClient);
-  // http://localhost:8080/api
   private apiUrl = environment.apiUrl;
 
-  getAllArticles(): Observable<ArticleResponse[]> {
-    return this.http.get<ArticleResponse[]>(`${this.apiUrl}/articles`);
+  getAllArticles(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.apiUrl}/articles`);
   }
 
-  getArticleById(id: number): Observable<ArticleResponse> {
-    return this.http.get<ArticleResponse>(`${this.apiUrl}/articles/${id}`);
+  getArticleById(id: number): Observable<Article> {
+    return this.http.get<Article>(`${this.apiUrl}/articles/${id}`);
   }
 
   createArticle(articleData: { title: string; content: string; topicId: number }) {
-    return this.http.post<ArticleResponse>(`${this.apiUrl}/articles`, articleData);
+    return this.http.post<Article>(`${this.apiUrl}/articles`, articleData);
   }
 
 }
