@@ -9,6 +9,7 @@ import {guestGuard} from "./core/guards/guest.guard";
 import {CreateArticleComponent} from "./features/articles/create-article/create-article.component";
 import {ArticleDetailComponent} from "./features/articles/article-detail/article-detail.component";
 import {TopicsComponent} from "./features/topics/topics.component";
+import {UserProfileComponent} from "./features/user-profile/user-profile.component";
 
 // consider a guard combined with canLoad / canActivate route option
 // to manage unauthenticated user to access private routes
@@ -24,6 +25,7 @@ export const routes: Routes = [
   {path: 'articles/create', component: CreateArticleComponent, canActivate: [AuthGuard]},
   {path: 'articles/:id', component: ArticleDetailComponent, canActivate: [AuthGuard]},
   {path: 'topics', component: TopicsComponent, canActivate: [AuthGuard]},
+  {path: 'profile', component: UserProfileComponent, canActivate: [AuthGuard]},
 
   // {
   //   path: 'articles/create',
