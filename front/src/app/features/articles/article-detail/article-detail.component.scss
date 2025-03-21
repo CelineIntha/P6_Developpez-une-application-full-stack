@@ -1,0 +1,25 @@
+.comment-wrapper {
+  display: flex;
+  align-items: flex-start;
+
+  .author {
+    min-width: 100px;
+    white-space: nowrap;
+  }
+
+  .comment-bubble {
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    word-wrap: break-word;
+  }
+}
+
+.btn-send {
+  position: relative;
+  top: -12px;
+  left: -3px;
+}
+
+.send-icon {
+  rotate: (-40deg);
+}

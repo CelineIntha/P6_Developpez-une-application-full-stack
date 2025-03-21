@@ -39,6 +39,12 @@
           <p class="clamp-5 mb-0">{{ article.content }}</p>
         </div>
       </div>
+    } @empty {
+      <div class="container d-flex row justify-content-center align-items-center text-center">
+        <h2 class="mt-5">Pas d'articles pour le moment...</h2>
+        <h3 class="topic">Parcourez les thèmes disponibles <a class="topic fw-bold" routerLink="/topics">ici</a> !
+        </h3>
+      </div>
     }
   </div>
 </div>

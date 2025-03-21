@@ -8,6 +8,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import {ArticleComment} from "../../../core/models/article-comment";
+import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
   selector: 'app-article-detail',
@@ -18,7 +20,8 @@ import {MatButtonModule} from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTooltip
   ],
   templateUrl: './article-detail.component.html',
   styleUrls: ['./article-detail.component.scss']
@@ -30,35 +33,38 @@ export class ArticleDetailComponent implements OnInit {
   private router: Router = inject(Router);
 
   article: Article | null = null;
+
   commentForm: FormGroup = this.fb.group({
-    content: ['', [Validators.required]]
+    content: ['', Validators.required]
   });
 
   ngOnInit(): void {
     const id: number = Number(this.route.snapshot.paramMap.get('id'));
     this.articleService.getArticleById(id).subscribe({
-      next: (article: Article): Article => this.article = article,
-      error: (): Promise<boolean> => this.router.navigate(['/dashboard'])
+      next: (article: Article) => {
+        this.article = article;
+      },
+      error: () => {
+        this.router.navigate(['/dashboard']);
+      }
     });
   }
 
   submitComment(): void {
     if (this.commentForm.invalid || !this.article) return;
 
-    const newComment = {
-      content: this.commentForm.value.content,
-      articleId: this.article.id
-    };
+    const content = this.commentForm.value.content;
 
-
-    this.article.comments.push({
-      id: Date.now(),
-      content: newComment.content,
-      author: 'Vous',
-      createdAt: new Date()
+    this.articleService.addComment(this.article.id, content).subscribe({
+      next: (newComment: ArticleComment) => {
+        this.article?.comments.push(newComment);
+        this.commentForm.reset();
+      },
+      error: () => {
+        console.error('Erreur lors de l\'ajout du commentaire');
+      }
     });
 
-    this.commentForm.reset();
   }
 
   goBack(): void {

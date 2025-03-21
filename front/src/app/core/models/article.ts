@@ -1,4 +1,4 @@
-import {Comment} from './comment';
+import {ArticleComment} from './article-comment';
 
 export interface Article {
   id: number;
@@ -8,5 +8,5 @@ export interface Article {
   author: string;
   topic: string;
   topicId: number;
-  comments: Comment[];
+  comments: ArticleComment[];
 }
