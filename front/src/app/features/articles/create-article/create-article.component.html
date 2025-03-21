@@ -1,0 +1,53 @@
+<div class="container-fluid">
+  <div class="container">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-6 col-12">
+        <h1 class="text-center mb-5 fw-bold">Créer un nouvel article</h1>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger">{{ errorMessage }}</div>
+        }
+
+        <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
+
+          <div class="mb-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Thème</mat-label>
+              <mat-select formControlName="topicId" required>
+                @for(topic of topics ; track topic) {
+                  <mat-option [value]="topic.id">
+                  {{ topic.name }}
+                  </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="mb-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Titre</mat-label>
+              <input matInput formControlName="title" required>
+            </mat-form-field>
+          </div>
+
+          <div class="mb-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Contenu</mat-label>
+              <textarea matInput formControlName="content" rows="6" required></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="text-center">
+            <button mat-raised-button color="primary" type="submit" [disabled]="articleForm.invalid">
+              Créer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
