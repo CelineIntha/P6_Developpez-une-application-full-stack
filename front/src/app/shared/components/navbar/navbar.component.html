@@ -25,8 +25,8 @@
              [routerLinkActiveOptions]="{ exact: true }">Thèmes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">
-            <img src="https://picsum.photos/50/50" alt="" width="50" height="50" style="border-radius:50%;">
+          <a class="nav-link" routerLink="/profile">
+            <img class='profile-picture' [ngSrc]="'https://picsum.photos/50/50'" alt="" [width]="50" [height]="50">
           </a>
         </li>
       </ul>
@@ -55,8 +55,8 @@
         </li>
       </ul>
       <div class="nav-item mt-auto">
-        <a class="nav-link" href="#">
-          <img src="https://picsum.photos/50/50" alt="profil" width="50" height="50" style="border-radius:50%;">
+        <a class="nav-link" routerLink="/profile">
+          <img class='profile-picture' [ngSrc]="'https://picsum.photos/50/50'" alt="" [width]="50" [height]="50">
         </a>
       </div>
     </div>

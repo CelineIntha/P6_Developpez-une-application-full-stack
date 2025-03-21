@@ -63,7 +63,11 @@
 // Menu desktop
 .navbar {
   border-bottom: 1px solid black;
+}
 
+//image de profile
+.profile-picture {
+  border-radius: 50%;
 }
 
 // style général couleur des liens
@@ -79,6 +83,7 @@
   color: #7763C5 !important;
   font-weight: bold;
 }
+
 .nav-link.text-danger {
   &:hover {
     cursor: pointer;
