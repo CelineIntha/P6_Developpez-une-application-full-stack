@@ -1,0 +1,61 @@
+<nav class="navbar navbar-expand-lg bg-light position-relative bg-white">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-center">
+      <img ngSrc="/assets/logo_p6.png" class="img-fluid" alt="logo" height="100" width="150" />
+    </div>
+
+    <button
+      class="navbar-toggler d-lg-none border-0"
+      type="button"
+      (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse d-none d-lg-flex justify-content-end" id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item">
+          <a class="nav-link fw-bold text-danger fs-6" href="#">Se déconnecter</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-article fs-5 me-3" href="#">Articles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-dark fs-5" href="#">Thèmes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <img src="https://picsum.photos/50/50" alt="" width="50" height="50" style="border-radius:50%;">
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div
+    class="overlay d-lg-none"
+    [class.active]="isNavbarOpen"
+    (click)="toggleNavbar()">
+  </div>
+
+  <div class="side-menu d-lg-none" [class.open]="isNavbarOpen">
+    <div class="d-flex flex-column justify-content-between h-100 p-4 text-end">
+      <ul class="navbar-nav">
+        <li class="nav-item mb-2">
+          <a class="nav-link fw-bold text-danger" href="#">Se déconnecter</a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link text-dark fs-4" href="#">Articles</a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link text-dark fs-4" href="#">Thèmes</a>
+        </li>
+      </ul>
+      <div class="nav-item mt-auto">
+        <a class="nav-link" href="#">
+          <img src="https://picsum.photos/50/50" alt="profil" width="50" height="50" style="border-radius:50%;">
+        </a>
+      </div>
+    </div>
+  </div>
+
+</nav>

@@ -47,8 +47,10 @@ public class AuthController {
     @Operation(summary = "Inscription d'un utilisateur", description = "Permet à un utilisateur de créer un compte.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Inscription réussie"),
-            @ApiResponse(responseCode = "400", description = "Email ou nom d'utilisateur déjà utilisé, ou mot de passe non conforme")
+            @ApiResponse(responseCode = "400", description = "Le mot de passe ne respecte pas les critères de sécurité"),
+            @ApiResponse(responseCode = "409", description = "Email ou nom d'utilisateur déjà utilisé")
     })
+
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
         if (userService.existsByEmail(registerUserDto.getEmail())) {

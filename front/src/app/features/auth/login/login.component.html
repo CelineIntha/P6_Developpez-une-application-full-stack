@@ -1,8 +1,58 @@
-<h2>Connexion</h2>
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <input type="text" formControlName="usernameOrEmail" placeholder="Email ou Nom d'utilisateur" required />
-  <input type="password" formControlName="password" placeholder="Mot de passe" required />
-  <button type="submit">Se connecter</button>
-</form>
+<div class="container-fluid">
+  <div class="container">
+    <button mat-icon-button (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
+    </button>
 
-<p>Pas encore inscrit ? <a routerLink="/register">Créer un compte</a></p>
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-4 col-12">
+        <div class="d-flex justify-content-center d-lg-none">
+          <img ngSrc="/assets/logo_p6.png" class="img-fluid" alt="logo" priority height="401" width="695"/>
+        </div>
+
+        <h1 class="text-center mb-5">Se connecter</h1>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="mb-4">
+            <label for="usernameOrEmail" class="form-label">Email ou nom d'utilisateur</label>
+            <input type="text" class="form-control" formControlName="usernameOrEmail" id="usernameOrEmail"
+                   autocomplete="username" required/>
+
+            @if (loginForm.errors?.['usernameOrEmail']) {
+              <div class="text-danger">
+                {{ loginForm.errors?.['usernameOrEmail'] }}
+              </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" formControlName="password" id="password" required
+                   autocomplete="current-password"/>
+
+            @if (loginForm.errors?.['password']) {
+              <div class="text-danger">
+                {{ loginForm.errors?.['password'] }}
+              </div>
+            }
+          </div>
+
+          <div class="row">
+            <div class="col d-flex justify-content-center align-items-center">
+              <button mat-raised-button type="submit" class="btn-submit fw-bold text-white mt-4"
+                      [disabled]="loginForm.invalid">
+                Se connecter
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
