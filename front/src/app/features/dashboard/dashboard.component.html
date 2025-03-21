@@ -2,57 +2,45 @@
 
 <div class="container-fluid mt-5">
 
-    <!-- Header -->
-    <div class="row d-flex flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between mb-3 px-3 text-center text-lg-start">
-        <div class="col-auto mb-2 mb-lg-0">
-            <button class="btn border btn-create text-white fw-bold" routerLink="/articles/create">
-                Créer un article
-            </button>
+  <!-- Header -->
+  <div
+    class="row flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between mb-4 px-3 text-center text-lg-start">
+    <div class="col-auto mb-3 mb-lg-0">
+      <button class="btn border btn-create text-white fw-bold" routerLink="/articles/create">
+        Créer un article
+      </button>
+    </div>
+    <div class="col-auto">
+      <button class="btn d-flex align-items-center gap-2 fs-4 fw-normal text-dark fw-bold"
+              (click)="toggleSortOrder()"
+              matTooltip="{{sortOrder === 'desc' ? 'Plus ancien' : 'Plus récent'}}"
+              aria-label="Button that displays a tooltip">
+        Trier par
+        <mat-icon>{{ sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Articles -->
+  <div class="row g-5 px-3">
+    @for (article of articles; track article) {
+      <div class="col-12 col-lg-6">
+        <div class="box h-100 p-4 shadow-sm border rounded-3"
+             [routerLink]="['/articles', article.id]"
+             mat-raised-button
+             matTooltip="Voir l'article"
+             aria-label="Button that displays a tooltip">
+          <h4 class="fw-bold mb-2">{{ article.title }}</h4>
+
+          <div class="text-muted mb-2 d-flex flex-wrap">
+            <small class="me-3">{{ article.createdAt | date:'shortDate' }}</small>
+            <small>{{ article.author }}</small>
+          </div>
+
+          <p class="clamp-5 mb-0">{{ article.content }}</p>
         </div>
-        <div class="col-auto">
-            <button mat-button [matMenuTriggerFor]="sortMenu"
-                    class="d-flex align-items-center gap-2 fs-4 fw-normal text-dark">
-                Trier par
-                <mat-icon class="fs-5">{{ sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-            </button>
-
-            <mat-menu #sortMenu="matMenu">
-                <button mat-menu-item (click)="setSortOrder('desc')">
-                    <mat-icon>arrow_downward</mat-icon>
-                    Plus récents
-                </button>
-                <button mat-menu-item (click)="setSortOrder('asc')">
-                    <mat-icon>arrow_upward</mat-icon>
-                    Plus anciens
-                </button>
-            </mat-menu>
-        </div>
-
-    </div>
-
-
-    <!-- Articles -->
-    <div class="container">
-    </div>
-    <div class="row gx-4">
-        @for (article of articles; track article) {
-            <div
-                    class="box col-12 col-lg-6 mt-4 cursor-pointer"
-                    [routerLink]="['/articles', article.id]">
-
-                <h4 class="fw-bold mt-3">{{ article.title }}</h4>
-
-                <div class="row">
-                    <div class="col d-flex">
-                        <h5 class="ms-1 me-3">{{ article.createdAt | date:'shortDate' }}</h5>
-                        <h5 class="ms-3">{{ article.author }}</h5>
-                    </div>
-                </div>
-
-                <p class="ms-1 clamp-5">{{ article.content }}</p>
-            </div>
-        }
-    </div>
-
-
+      </div>
+    }
+  </div>
 </div>
+

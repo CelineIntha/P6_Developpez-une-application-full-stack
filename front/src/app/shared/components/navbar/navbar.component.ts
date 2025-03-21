@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 
@@ -15,11 +15,12 @@ import {RouterLink} from "@angular/router";
 export class NavbarComponent {
 
   isNavbarOpen: boolean = false;
-  toggleNavbar() {
+
+  toggleNavbar(): void {
     this.isNavbarOpen = !this.isNavbarOpen;
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
     window.location.href = '/login';
   }

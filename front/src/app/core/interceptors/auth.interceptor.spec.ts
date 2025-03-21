@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { AuthInterceptor } from './auth.interceptor';
-import { AuthService } from '../services/auth.service';
+import {AuthInterceptor} from './auth.interceptor';
+import {AuthService} from '../services/auth.service';
 
-describe('AuthInterceptor', () => {
+describe('AuthInterceptor', (): void => {
   let interceptor: AuthInterceptor;
 
-  beforeEach(() => {
+  beforeEach((): void => {
     TestBed.configureTestingModule({
       providers: [
         AuthInterceptor,
-        { provide: AuthService, useValue: { getToken: () => 'fake-jwt-token' } }
+        {provide: AuthService, useValue: {getToken: (): string => 'fake-jwt-token'}}
       ]
     });
 
