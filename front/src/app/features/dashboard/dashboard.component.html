@@ -10,7 +10,8 @@
             </button>
         </div>
         <div class="col-auto">
-            <button mat-button [matMenuTriggerFor]="sortMenu" class="d-flex align-items-center gap-2 fs-4 fw-normal text-dark">
+            <button mat-button [matMenuTriggerFor]="sortMenu"
+                    class="d-flex align-items-center gap-2 fs-4 fw-normal text-dark">
                 Trier par
                 <mat-icon class="fs-5">{{ sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
             </button>
@@ -30,13 +31,14 @@
     </div>
 
 
-
     <!-- Articles -->
     <div class="container">
     </div>
     <div class="row gx-4">
         @for (article of articles; track article) {
-            <div class="box col-12 col-lg-6 mt-4">
+            <div
+                    class="box col-12 col-lg-6 mt-4 cursor-pointer"
+                    [routerLink]="['/articles', article.id]">
 
                 <h4 class="fw-bold mt-3">{{ article.title }}</h4>
 
@@ -48,9 +50,9 @@
                 </div>
 
                 <p class="ms-1 clamp-5">{{ article.content }}</p>
-
             </div>
         }
     </div>
+
 
 </div>
