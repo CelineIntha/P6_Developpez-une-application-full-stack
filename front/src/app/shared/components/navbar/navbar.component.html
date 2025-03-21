@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg bg-light position-relative bg-white">
   <div class="container-fluid">
     <div class="d-flex justify-content-center">
-      <img ngSrc="/assets/logo_p6.png" class="img-fluid" alt="logo" height="100" width="150" />
+      <img [ngSrc]="'/assets/logo_p6.png'" priority class="img-fluid" alt="logo" height="87" width="150"/>
     </div>
 
     <button
@@ -17,10 +17,12 @@
           <a class="nav-link fw-bold text-danger fs-6" (click)="logout()">Se déconnecter</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link nav-link-article fs-5 me-3" routerLink="/dashboard">Articles</a>
+          <a class="nav-link fs-5 me-3" routerLink="/dashboard" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">Articles</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark fs-5" href="#">Thèmes</a>
+          <a class="nav-link text-dark fs-5" routerLink="/topics" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">Thèmes</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">
@@ -44,10 +46,12 @@
           <a class="nav-link fw-bold text-danger" (click)="logout()">Se déconnecter</a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link text-dark fs-4" routerLink="/dashboard">Articles</a>
+          <a class="nav-link text-dark fs-4" routerLink="/dashboard" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">Articles</a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link text-dark fs-4" href="#">Thèmes</a>
+          <a class="nav-link text-dark fs-4" routerLink="/topics" routerLinkActive="active-link"
+             [routerLinkActiveOptions]="{ exact: true }">Thèmes</a>
         </li>
       </ul>
       <div class="nav-item mt-auto">

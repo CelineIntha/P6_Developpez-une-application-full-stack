@@ -64,9 +64,6 @@
 .navbar {
   border-bottom: 1px solid black;
 
-  .nav-link-article {
-    color: #6C5CCF;
-  }
 }
 
 // style général couleur des liens
@@ -78,6 +75,10 @@
   }
 }
 
+.active-link {
+  color: #7763C5 !important;
+  font-weight: bold;
+}
 .nav-link.text-danger {
   &:hover {
     cursor: pointer;
