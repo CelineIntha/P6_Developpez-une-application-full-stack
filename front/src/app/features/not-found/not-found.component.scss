@@ -1,0 +1,10 @@
+a {
+  background-color: #7763C5;
+  color: white;
+  border: 1px solid #7763C5;
+  &:hover {
+    color: #7763C5;
+    background-color: white;
+    border: 1px solid #7763C5;
+  }
+}

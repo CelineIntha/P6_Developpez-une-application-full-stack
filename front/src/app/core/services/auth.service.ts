@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {AuthResponse} from "../models/auth-response";
+import {RegisterData} from "../models/register-data";
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,14 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  // TODO : fix any
+  register(userData: RegisterData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/register`, userData);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
   }
 }

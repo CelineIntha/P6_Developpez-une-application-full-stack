@@ -5,7 +5,6 @@ import { AuthService } from '../services/auth.service';
 
 describe('AuthInterceptor', () => {
   let interceptor: AuthInterceptor;
-  let authService: AuthService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -16,7 +15,6 @@ describe('AuthInterceptor', () => {
     });
 
     interceptor = TestBed.inject(AuthInterceptor);
-    authService = TestBed.inject(AuthService);
   });
 
   it('should be created', () => {
