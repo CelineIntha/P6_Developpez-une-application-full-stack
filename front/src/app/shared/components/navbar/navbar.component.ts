@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {NgOptimizedImage} from "@angular/common";
 
 @Component({
   selector: 'app-navbar',
   imports: [
-    NgClass,
     NgOptimizedImage
   ],
   standalone: true,
@@ -15,7 +14,9 @@ export class NavbarComponent {
 
   isNavbarOpen: boolean = false;
 
-  toggleNavbar(): void {
+
+  toggleNavbar() {
     this.isNavbarOpen = !this.isNavbarOpen;
   }
+
 }
