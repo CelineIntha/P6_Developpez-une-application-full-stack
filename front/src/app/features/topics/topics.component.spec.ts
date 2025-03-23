@@ -1,21 +1,21 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {HomeComponent} from './home.component';
+
+import {TopicsComponent} from './topics.component';
 import {provideHttpClientTesting} from "@angular/common/http/testing";
 import {provideHttpClient} from "@angular/common/http";
-import {ActivatedRoute, provideRouter} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {of} from "rxjs";
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('TopicsComponent', () => {
+  let component: TopicsComponent;
+  let fixture: ComponentFixture<TopicsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent],
+      imports: [TopicsComponent],
       providers: [
         ...provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -23,9 +23,10 @@ describe('HomeComponent', () => {
           }
         }
       ]
-    }).compileComponents();
+    })
+      .compileComponents();
 
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(TopicsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

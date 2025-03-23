@@ -1,0 +1,25 @@
+.comment-wrapper {
+  .author {
+    min-width: 100px;
+    white-space: nowrap;
+  }
+
+  .comment-bubble {
+    background-color: #EEE;
+    border: 1px solid #EEEEEE;
+    border-radius: 18px;
+    word-wrap: break-word;
+  }
+}
+
+.btn-send {
+  position: relative;
+  top: -12px;
+  left: -3px;
+}
+
+.send-icon {
+  rotate: (-40deg);
+}
+
+

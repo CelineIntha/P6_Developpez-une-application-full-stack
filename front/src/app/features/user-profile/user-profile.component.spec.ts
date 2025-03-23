@@ -1,21 +1,21 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {HomeComponent} from './home.component';
+
+import {UserProfileComponent} from './user-profile.component';
 import {provideHttpClientTesting} from "@angular/common/http/testing";
 import {provideHttpClient} from "@angular/common/http";
-import {ActivatedRoute, provideRouter} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {of} from "rxjs";
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('UserProfileComponent', () => {
+  let component: UserProfileComponent;
+  let fixture: ComponentFixture<UserProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent],
+      imports: [UserProfileComponent],
       providers: [
         ...provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -23,9 +23,10 @@ describe('HomeComponent', () => {
           }
         }
       ]
-    }).compileComponents();
+    })
+      .compileComponents();
 
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(UserProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

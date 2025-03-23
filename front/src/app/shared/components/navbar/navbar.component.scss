@@ -1,3 +1,52 @@
+// Menu desktop
+.navbar {
+  border-bottom: 1px solid black;
+}
+
+//image de profile
+.profile-picture {
+  border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-picture mat-icon {
+  font-size: 50px;
+  height: 50px;
+  width: 50px;
+}
+
+
+// style général couleur des liens
+.nav-link {
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #6C5CCF !important;
+  }
+}
+
+.active-link {
+  color: #7763C5 !important;
+  font-weight: bold;
+}
+
+.nav-link.text-danger {
+  &:hover {
+    cursor: pointer;
+    color: #de7a82 !important;
+  }
+}
+
+li {
+  list-style-type: none;
+}
+
+
+
 // Le menu burger
 .navbar-toggler-icon {
   background-image: none;
@@ -60,11 +109,3 @@
   }
 }
 
-// Menu desktop
-.navbar {
-  border-bottom: 1px solid black;
-
-  .nav-link-article {
-    color: #6C5CCF;
-  }
-}

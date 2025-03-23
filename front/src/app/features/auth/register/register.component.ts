@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {NgOptimizedImage} from "@angular/common";
 import {MatButton, MatIconButton} from "@angular/material/button";
 import {AuthService} from "../../../core/services/auth.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-register',
@@ -40,16 +41,14 @@ export class RegisterComponent {
 
     this.errorMessage = null;
 
-    // TODO: avoid any
-    const formData: any = this.registerForm.value;
+    const formData: FormData = this.registerForm.value;
 
     this.authService.register(formData).subscribe({
       next: (): void => {
         alert('Inscription réussie');
         this.router.navigate(['/login']);
       },
-      // TODO : avoid any
-      error: (err: any): void => {
+      error: (err: HttpErrorResponse): void => {
         console.error('Erreur lors de l’inscription', err);
 
         if (err.error) {

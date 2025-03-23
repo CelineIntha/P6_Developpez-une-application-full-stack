@@ -1,20 +1,19 @@
 import {TestBed} from '@angular/core/testing';
 
-import {AuthService} from './auth.service';
+import {UserService} from './user.service';
 import {provideHttpClientTesting} from "@angular/common/http/testing";
 import {provideHttpClient} from "@angular/common/http";
-import {ActivatedRoute, provideRouter} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {of} from "rxjs";
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('UserService', () => {
+  let service: UserService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         ...provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([]),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -23,7 +22,7 @@ describe('AuthService', () => {
         }
       ]
     });
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(UserService);
   });
 
   it('should be created', () => {
