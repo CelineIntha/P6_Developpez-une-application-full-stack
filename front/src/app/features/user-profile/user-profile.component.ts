@@ -16,6 +16,7 @@ import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-user-profile',
@@ -37,6 +38,7 @@ export class UserProfileComponent implements OnInit {
   private subscriptionService: SubscriptionService = inject(SubscriptionService);
   private topicService: TopicService = inject(TopicService);
   private router: Router = inject(Router);
+  private _snackBar: MatSnackBar = inject(MatSnackBar);
 
   profileForm!: FormGroup<{
     username: FormControl<string>;
@@ -157,9 +159,12 @@ export class UserProfileComponent implements OnInit {
     const payload: UpdateUser = this.profileForm.value;
 
     this.userService.updateUser(payload).subscribe({
-      next: () => {
-        this.authService.logout();
-        this.router.navigate(['/']);
+      next: (): void => {
+        this.openSnackBar("Profil mis à jour ! Redirection en cours…", "OK");
+        setTimeout((): void => {
+          this.authService.logout();
+          this.router.navigate(['/']);
+        }, 3000);
       },
       error: (err: HttpErrorResponse) => {
         this.errorMessage =
@@ -167,4 +172,13 @@ export class UserProfileComponent implements OnInit {
       }
     });
   }
+
+  openSnackBar(message: string, action: string): void {
+    this._snackBar.open(message, action, {
+      duration: 3000,
+      verticalPosition: 'top',
+      horizontalPosition: 'right',
+    });
+  }
+
 }
