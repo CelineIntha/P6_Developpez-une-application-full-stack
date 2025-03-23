@@ -15,7 +15,6 @@
           <button class="btn border btn-subscribe text-white fw-bold text-center"
                   [ngClass]="{ 'bg-secondary': isSubscribed(topic.id), '': !isSubscribed(topic.id) }"
                   (click)="toggleSubscription(topic.id)"
-                  [matTooltip]="isSubscribed(topic.id) ? 'Se désabonner ' : 'S\'abonner'"
                   [innerHTML]="isSubscribed(topic.id) ? 'Déjà abonné' : 'S\'abonner'"
                   aria-label="Toggle abonnement">
           </button>

@@ -3,14 +3,19 @@ import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} fr
 import {Router} from '@angular/router';
 import {UserService} from '../../core/services/user.service';
 import {AuthService} from '../../core/services/auth.service';
-import {User} from '../../core/models/user';
+import {SubscriptionService} from '../../core/services/subscription.service';
+import {TopicService} from '../../core/services/topic.service';
 
+import {User} from '../../core/models/user';
+import {Topic} from '../../core/models/topic';
+import {TopicSubscription} from '../../core/models/topic-subscription';
+import {UpdateUser} from '../../core/models/update-user';
+
+import {HttpErrorResponse} from '@angular/common/http';
 import {NavbarComponent} from '../../shared/components/navbar/navbar.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import {UpdateUser} from "../../core/models/update-user";
-import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-user-profile',
@@ -29,6 +34,8 @@ export class UserProfileComponent implements OnInit {
   private fb: FormBuilder = inject(FormBuilder);
   private userService: UserService = inject(UserService);
   private authService: AuthService = inject(AuthService);
+  private subscriptionService: SubscriptionService = inject(SubscriptionService);
+  private topicService: TopicService = inject(TopicService);
   private router: Router = inject(Router);
 
   profileForm!: FormGroup<{
@@ -39,7 +46,18 @@ export class UserProfileComponent implements OnInit {
 
   errorMessage: string | null = null;
 
+  topics: Topic[] = [];
+  subscribedTopicIds: number[] = [];
+  subscribedTopics: Topic[] = [];
+
   ngOnInit(): void {
+    this.topicService.getAllTopics().subscribe({
+      next: (topics: Topic[]) => {
+        this.topics = topics;
+        this.loadUserSubscriptions();
+      }
+    });
+
     this.userService.getCurrentUser().subscribe({
       next: (user: User) => {
         this.profileForm = this.fb.group({
@@ -68,6 +86,67 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  /**
+   * Récupère les abonnements de l'utilisateur depuis l'API.
+   * Met à jour la liste des thèmes abonnés (`subscribedTopicIds`)
+   * et filtre la liste complète des thèmes (`topics`) pour obtenir
+   * la liste des abonnements actuels (`subscribedTopics`).
+   */
+  private loadUserSubscriptions(): void {
+    this.subscriptionService.getUserSubscriptions().subscribe({
+      next: (subscriptions: TopicSubscription[]) => {
+        this.subscribedTopicIds = subscriptions.map((subscription: TopicSubscription) => subscription.topicId);
+        this.updateSubscribedTopics();
+      }
+    });
+  }
+
+
+  /**
+   * Met à jour la liste des thèmes abonnés (`subscribedTopics`)
+   * en filtrant tous les topics pour ne conserver que ceux dont l'ID
+   * est présent dans `subscribedTopicIds`.
+   */
+  updateSubscribedTopics(): void {
+    this.subscribedTopics = this.topics.filter((topic: Topic) =>
+      this.subscribedTopicIds.includes(topic.id)
+    );
+  }
+
+  /**
+   * Vérifie si l'utilisateur est abonné à un thème.
+   *
+   * @param topicId - L'identifiant du thème à vérifier
+   * @returns true si l'utilisateur est abonné, false sinon
+   */
+  isSubscribed(topicId: number): boolean {
+    return this.subscribedTopicIds.includes(topicId);
+  }
+
+
+  /**
+   * Désabonne l'utilisateur du thème et met à jour la liste des abonnements.
+   *
+   * @param topicId - L'identifiant du thème pour le désabonnement
+   */
+  unsubscribe(topicId: number): void {
+    this.subscriptionService.unsubscribe(topicId).subscribe({
+      next: () => {
+        this.subscribedTopicIds = this.subscribedTopicIds.filter(
+          id => id !== topicId
+        );
+        this.updateSubscribedTopics();
+      }
+    });
+  }
+
+
+  /**
+   * Envoi le formulaire pour mettre à jour le profil utilisateur.
+   * Si le formulaire est invalide ou qu'il n'a pas été modifié, rien ne se passe.
+   * En cas de succès, l'utilisateur est déconnecté et redirigé vers l'accueil.
+   * En cas d'erreur, un message est affiché.
+   */
   onSubmit(): void {
     if (this.profileForm.invalid) return;
     if (this.profileForm.pristine) {
@@ -78,15 +157,14 @@ export class UserProfileComponent implements OnInit {
     const payload: UpdateUser = this.profileForm.value;
 
     this.userService.updateUser(payload).subscribe({
-      next: (): void => {
+      next: () => {
         this.authService.logout();
         this.router.navigate(['/']);
       },
-      error: (err: HttpErrorResponse): void => {
+      error: (err: HttpErrorResponse) => {
         this.errorMessage =
           err.error?.message || 'Erreur lors de la mise à jour.';
       }
     });
   }
-
 }

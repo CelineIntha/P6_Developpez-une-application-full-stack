@@ -5,43 +5,83 @@
 
   @if (errorMessage) {
     <div class="row d-flex justify-content-center align-items-center">
-      <div class="col-10 col-lg-4 alert alert-danger text-center mb-5">{{ errorMessage }}</div>
+      <div class="col-10 col-lg-4 alert alert-danger text-center mb-5">
+        {{ errorMessage }}
+      </div>
     </div>
   }
 
   @if (profileForm) {
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="border-bottom border-black pb-5">
+    <form
+      [formGroup]="profileForm"
+      (ngSubmit)="onSubmit()"
+      class="border-bottom border-black pb-5"
+    >
       <div class="container d-flex flex-column align-items-center gap-3">
-
-        <mat-form-field appearance="outline" class="w-100 w-lg-75 w-xl-50">
+        <mat-form-field appearance="outline" class="w-75">
           <mat-label>Nom d'utilisateur</mat-label>
           <input matInput formControlName="username"/>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 w-lg-75 w-xl-50">
+        <mat-form-field appearance="outline" class="w-75">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email"/>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-100 w-lg-75 w-xl-50">
+        <mat-form-field appearance="outline" class="w-75">
           <mat-label>Mot de passe</mat-label>
           <input matInput type="password" formControlName="password"/>
-          @if (profileForm.get('password')?.touched && profileForm.get('password')?.invalid) {
+          @if (profileForm.get('password')?.touched &&
+          profileForm.get('password')?.invalid) {
             <mat-error>
-              Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule, un chiffre et un
-              caractère spécial.
+              Le mot de passe doit contenir au moins 8 caractères, dont une
+              majuscule, une minuscule, un chiffre et un caractère spécial.
             </mat-error>
           }
         </mat-form-field>
 
         <div class="pt-2 text-center">
-          <button class="btn border btn-save text-white fw-bold w-100" type="submit" [disabled]="profileForm.invalid">
+          <button
+            class="btn border btn-save text-white fw-bold w-100"
+            type="submit"
+            [disabled]="profileForm.invalid"
+          >
             Sauvegarder
           </button>
         </div>
-
       </div>
     </form>
-
   }
+
+  <h2 class="text-center fw-bold fs-3 mt-5 mb-4">Mes abonnements</h2>
+
+  <div class="row g-4 pb-5">
+    @for (topic of subscribedTopics; track topic) {
+      <div class="col-12 col-lg-6">
+        <div class="box p-4 shadow-sm border rounded-3">
+          <h4 class="fw-bold mb-2">{{ topic.name }}</h4>
+
+          <p class="clamp-5 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+            esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
+            qui
+            officia deserunt mollit anim id est laborum.</p>
+
+          <div class="btn-container d-flex justify-content-center align-items-center mt-3">
+            <button class="btn border btn-unsubscribe text-white fw-bold text-center"
+                    (click)="unsubscribe(topic.id)"
+                    aria-label="Toggle abonnement">
+              Se désabonner
+            </button>
+          </div>
+
+        </div>
+      </div>
+    } @empty {
+      <p class="text-center text-muted mt-4">
+        Aucun abonnement pour le moment.
+      </p>
+    }
+  </div>
 </div>
