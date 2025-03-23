@@ -1,0 +1,96 @@
+<div class="container-fluid">
+  <div class="container">
+    <button mat-icon-button (click)="goBack()">
+      <span class="material-icons">arrow_back</span>
+    </button>
+
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-lg-4 col-12">
+        <div class="d-flex justify-content-center d-lg-none">
+          <img ngSrc="/assets/logo_p6.png" class="img-fluid" alt="logo" priority height="401" width="695"/>
+        </div>
+
+        <h1 class="text-center mb-5">Inscription</h1>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <div class="mb-4">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input type="text" class="form-control" formControlName="username" id="username" autocomplete="username" required/>
+
+            @if (registerForm.errors?.['username']) {
+              <div class="text-danger">
+                {{ registerForm.errors?.['username'] }}
+              </div>
+            }
+            @if (registerForm.get('username')?.hasError('minlength')) {
+              <div class="text-danger">
+                Le nom d'utilisateur doit contenir au moins 3 caractères.
+              </div>
+            }
+            @if (registerForm.get('username')?.hasError('maxlength')) {
+              <div class="text-danger">
+                Le nom d'utilisateur ne peut pas dépasser 50 caractères.
+              </div>
+            }
+          </div>
+
+          <div class="mb-4">
+            <label for="email" class="form-label">Adresse e-mail</label>
+            <input type="email" class="form-control" formControlName="email" id="email" autocomplete="email" required/>
+
+            @if (registerForm.errors?.['email']) {
+              <div class="text-danger">
+                {{ registerForm.errors?.['email'] }}
+              </div>
+            }
+            @if (registerForm.get('email')?.hasError('email')) {
+              <div class="text-danger">
+                L'email doit être valide.
+              </div>
+            }
+            @if (registerForm.get('email')?.hasError('maxlength')) {
+              <div class="text-danger">
+                L'email ne peut pas dépasser 255 caractères.
+              </div>
+            }
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" formControlName="password" id="password" required autocomplete="new-password"/>
+
+            @if (registerForm.errors?.['password']) {
+              <div class="text-danger">
+                {{ registerForm.errors?.['password'] }}
+              </div>
+            }
+            @if (registerForm.get('password')?.hasError('minlength')) {
+              <div class="text-danger">
+                Le mot de passe doit contenir au moins 8 caractères.
+              </div>
+            }
+            @if (registerForm.get('password')?.hasError('maxlength')) {
+              <div class="text-danger">
+                Le mot de passe ne peut pas dépasser 255 caractères.
+              </div>
+            }
+          </div>
+
+          <div class="row">
+            <div class="col d-flex justify-content-center align-items-center">
+              <button mat-raised-button type="submit" class="btn-submit fw-bold text-white mt-4" [disabled]="registerForm.invalid">
+                S'inscrire
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

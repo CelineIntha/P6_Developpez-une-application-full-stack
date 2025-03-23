@@ -1,0 +1,48 @@
+<app-navbar></app-navbar>
+
+<div class="container-fluid mt-5">
+  <div
+    class="row flex-column flex-lg-row align-items-center justify-content-center justify-content-lg-between mb-4 px-3 text-center text-lg-start">
+    <div class="col-auto mb-3 mb-lg-0">
+      <button class="btn border btn-create text-white fw-bold" routerLink="/articles/create">
+        Créer un article
+      </button>
+    </div>
+    <div class="col-auto">
+      <button class="btn d-flex align-items-center gap-2 fs-4 fw-normal text-dark fw-bold"
+              (click)="toggleSortOrder()"
+              matTooltip="{{sortOrder === 'desc' ? 'Plus ancien' : 'Plus récent'}}"
+              aria-label="Button that displays a tooltip">
+        Trier par
+        <mat-icon>{{ sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-5 px-3">
+    @for (article of articles; track article) {
+      <div class="col-12 col-lg-6">
+        <div class="box h-100 p-4 shadow-sm border rounded-3"
+             [routerLink]="['/articles', article.id]"
+             matTooltip="Voir l'article"
+             aria-label="Button that displays a tooltip">
+          <h4 class="fw-bold mb-2">{{ article.title }}</h4>
+
+          <div class="text-muted mb-2 d-flex flex-wrap">
+            <small class="me-3">{{ article.createdAt | date:'shortDate' }}</small>
+            <small>{{ article.author }}</small>
+          </div>
+
+          <p class="clamp-5 mb-0">{{ article.content }}</p>
+        </div>
+      </div>
+    } @empty {
+      <div class="container d-flex row justify-content-center align-items-center text-center">
+        <h2 class="mt-5">Pas d'articles pour le moment...</h2>
+        <h3 class="topic">Parcourez les thèmes disponibles <a class="topic fw-bold" routerLink="/topics">ici</a> !
+        </h3>
+      </div>
+    }
+  </div>
+</div>
+
