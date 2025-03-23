@@ -7,4 +7,7 @@ public class UpdateUserResponse {
         this.token = token;
     }
 
+    public String getToken() {
+        return token;
+    }
 }
