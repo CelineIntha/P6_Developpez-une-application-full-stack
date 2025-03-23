@@ -1,15 +1,13 @@
 .comment-wrapper {
-  display: flex;
-  align-items: flex-start;
-
   .author {
     min-width: 100px;
     white-space: nowrap;
   }
 
   .comment-bubble {
-    border: 1px solid #dee2e6;
-    border-radius: 20px;
+    background-color: #EEE;
+    border: 1px solid #EEEEEE;
+    border-radius: 18px;
     word-wrap: break-word;
   }
 }
@@ -23,3 +21,5 @@
 .send-icon {
   rotate: (-40deg);
 }
+
+

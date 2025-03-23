@@ -68,7 +68,19 @@
 //image de profile
 .profile-picture {
   border-radius: 50%;
+  width: 75px;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.profile-picture mat-icon {
+  font-size: 50px;
+  height: 50px;
+  width: 50px;
+}
+
 
 // style général couleur des liens
 .nav-link {
