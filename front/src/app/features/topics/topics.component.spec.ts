@@ -1,6 +1,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TopicsComponent} from './topics.component';
+import {provideHttpClientTesting} from "@angular/common/http/testing";
+import {provideHttpClient} from "@angular/common/http";
+import {ActivatedRoute} from "@angular/router";
+import {of} from "rxjs";
 
 describe('TopicsComponent', () => {
   let component: TopicsComponent;
@@ -8,7 +12,17 @@ describe('TopicsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TopicsComponent]
+      imports: [TopicsComponent],
+      providers: [
+        ...provideHttpClientTesting(),
+        provideHttpClient(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({})
+          }
+        }
+      ]
     })
       .compileComponents();
 
