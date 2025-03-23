@@ -22,6 +22,14 @@ export class AuthService {
     );
   }
 
+  register(userData: FormData): Observable<object> {
+    return this.http.post(`${this.apiUrl}/auth/register`, userData);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
   private saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
@@ -30,12 +38,8 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  register(userData: FormData): Observable<object> {
-    return this.http.post(`${this.apiUrl}/auth/register`, userData);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+  logout(): void {
+    localStorage.removeItem('token');
   }
 
   getCurrentUser(): Observable<User> {

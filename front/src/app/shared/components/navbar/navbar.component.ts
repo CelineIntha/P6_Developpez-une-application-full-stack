@@ -1,13 +1,15 @@
 import {Component} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {RouterLink, RouterLinkActive} from "@angular/router";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-navbar',
   imports: [
     NgOptimizedImage,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    MatIcon
   ],
   standalone: true,
   templateUrl: './navbar.component.html',

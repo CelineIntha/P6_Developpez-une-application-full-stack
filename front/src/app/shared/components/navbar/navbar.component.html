@@ -17,7 +17,7 @@
           <a class="nav-link fw-bold text-danger fs-6" (click)="logout()">Se déconnecter</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link fs-5 me-3" routerLink="/dashboard" routerLinkActive="active-link"
+          <a class="nav-link fs-5 mx-1" routerLink="/dashboard" routerLinkActive="active-link"
              [routerLinkActiveOptions]="{ exact: true }">Articles</a>
         </li>
         <li class="nav-item">
@@ -25,10 +25,16 @@
              [routerLinkActiveOptions]="{ exact: true }">Thèmes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/profile">
-            <img class='profile-picture' [ngSrc]="'https://picsum.photos/50/50'" alt="" [width]="50" [height]="50">
+          <a
+            class="nav-link profile-picture d-flex justify-content-center align-items-center"
+            routerLink="/profile"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <mat-icon class="profile-icon">account_circle</mat-icon>
           </a>
         </li>
+
       </ul>
     </div>
   </div>
@@ -55,9 +61,17 @@
         </li>
       </ul>
       <div class="nav-item mt-auto">
-        <a class="nav-link" routerLink="/profile">
-          <img class='profile-picture' [ngSrc]="'https://picsum.photos/50/50'" alt="" [width]="50" [height]="50">
-        </a>
+        <li class="nav-item text-end">
+          <a
+            class="nav-link profile-picture d-inline-flex justify-content-end align-items-center"
+            routerLink="/profile"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <mat-icon>account_circle</mat-icon>
+          </a>
+        </li>
+
       </div>
     </div>
   </div>

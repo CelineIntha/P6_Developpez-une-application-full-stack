@@ -56,7 +56,7 @@ export class ArticleDetailComponent implements OnInit {
     const content = this.commentForm.value.content;
 
     this.articleService.addComment(this.article.id, content).subscribe({
-      next: (newComment: ArticleComment) => {
+      next: (newComment: ArticleComment): void => {
         this.article?.comments.push(newComment);
         this.commentForm.reset();
       },
