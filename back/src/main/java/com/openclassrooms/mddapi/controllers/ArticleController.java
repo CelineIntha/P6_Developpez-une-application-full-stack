@@ -59,6 +59,7 @@ public class ArticleController {
                         article.getCreatedAt(),
                         article.getAuthor().getUsername(),
                         article.getTopic().getName(),
+                        article.getTopic().getId(),
                         article.getComments().stream()
                                 .map(comment -> new CommentResponse(
                                         comment.getId(),
@@ -96,6 +97,7 @@ public class ArticleController {
                 article.getCreatedAt(),
                 article.getAuthor().getUsername(),
                 article.getTopic().getName(),
+                article.getTopic().getId(),
                 List.of()
         ));
     }
@@ -121,6 +123,7 @@ public class ArticleController {
                 article.getCreatedAt(),
                 article.getAuthor().getUsername(),
                 article.getTopic().getName(),
+                article.getTopic().getId(),
                 article.getComments().stream()
                         .map(comment -> new CommentResponse(
                                 comment.getId(),
