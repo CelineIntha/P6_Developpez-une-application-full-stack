@@ -1,7 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {NavbarComponent} from "../../shared/components/navbar/navbar.component";
 import {NgClass} from "@angular/common";
-import {MatTooltip} from "@angular/material/tooltip";
 import {TopicService} from "../../core/services/topic.service";
 import {Topic} from "../../core/models/topic";
 import {SubscriptionService} from "../../core/services/subscription.service";
@@ -11,7 +10,6 @@ import {TopicSubscription} from "../../core/models/topic-subscription";
   selector: 'app-topics',
   imports: [
     NavbarComponent,
-    MatTooltip,
     NgClass
   ],
   standalone: true,

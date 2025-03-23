@@ -13,11 +13,11 @@ export class SubscriptionService {
     return this.http.get<TopicSubscription[]>(this.apiUrl);
   }
 
-  subscribe(topicId: number): Observable<any> {
-    return this.http.post(this.apiUrl, {topicId});
+  subscribe(topicId: number): Observable<TopicSubscription> {
+    return this.http.post<TopicSubscription>(this.apiUrl, {topicId});
   }
 
-  unsubscribe(topicId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${topicId}`);
+  unsubscribe(topicId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${topicId}`);
   }
 }
