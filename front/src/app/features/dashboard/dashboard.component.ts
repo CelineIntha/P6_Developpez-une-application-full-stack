@@ -9,7 +9,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {RouterLink} from "@angular/router";
 import {MatTooltip} from "@angular/material/tooltip";
 import {User} from "../../core/models/user";
-import {AuthService} from "../../core/services/auth.service";
+import {UserService} from "../../core/services/user.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -28,18 +28,15 @@ import {AuthService} from "../../core/services/auth.service";
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  authService: AuthService = inject(AuthService);
+  userService: UserService = inject(UserService);
+  articleService: ArticleService = inject(ArticleService);
 
   articles: Article[] = [];
   sortOrder: 'asc' | 'desc' = 'desc';
   user: User | null = null;
 
-
-  constructor(private articleService: ArticleService) {
-  }
-
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe({
+    this.userService.getCurrentUser().subscribe({
       next: (user: User): void => {
         this.user = user;
         this.articleService.getAllArticles().subscribe({
