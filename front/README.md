@@ -42,9 +42,9 @@ http://localhost:4200
 
 ### 📌 1. Postman Collection
 
-For API testing, you can import the Postman collection available at:
+For API testing, you can import the Postman collection:
 
-> ressources/postman/mdd.postman_collection.json
+mdd.postman_collection.json
 
 Follow the official documentation for import instructions:  
 🔗 [Postman Import Guide](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman)
