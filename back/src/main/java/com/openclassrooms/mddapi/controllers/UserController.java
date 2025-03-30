@@ -78,7 +78,10 @@ public class UserController {
         User user = userService.findByEmail(email);
 
         List<TopicResponse> subscribedTopics = user.getSubscriptions().stream()
-                .map(subscription -> new TopicResponse(subscription.getTopic().getId(), subscription.getTopic().getName()))
+                .map(subscription -> {
+                    var topic = subscription.getTopic();
+                    return new TopicResponse(topic.getId(), topic.getName(), topic.getDescription());
+                })
                 .toList();
 
         logger.info("Utilisateur {} trouvé avec {} abonnements", user.getUsername(), subscribedTopics.size());

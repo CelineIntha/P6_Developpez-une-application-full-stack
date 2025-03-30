@@ -39,7 +39,7 @@ public class TopicController {
         }
 
         List<TopicResponse> topicResponses = topics.stream()
-                .map(topic -> new TopicResponse(topic.getId(), topic.getName()))
+                .map(topic -> new TopicResponse(topic.getId(), topic.getName(), topic.getDescription()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(topicResponses);

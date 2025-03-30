@@ -15,8 +15,6 @@ import java.util.List;
 @Service
 public class TopicService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TopicService.class);
-
     @Autowired
     private TopicRepository topicRepository;
 
@@ -24,20 +22,4 @@ public class TopicService {
         return topicRepository.findAll();
     }
 
-    public Topic getTopicById(Long id) {
-        return topicRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Le topic avec l'ID " + id + " n'existe pas."));
-    }
-
-    public Topic createTopic(TopicDto topicDto) {
-        if (topicRepository.findByName(topicDto.getName()).isPresent()) {
-            throw new ConflictException("Le thème '" + topicDto.getName() + "' existe déjà.");
-        }
-
-        Topic topic = new Topic();
-        topic.setName(topicDto.getName());
-
-        logger.info("Nouveau thème créé : {}", topic.getName());
-        return topicRepository.save(topic);
-    }
 }
