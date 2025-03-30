@@ -16,6 +16,11 @@ export class ArticleService {
     return this.http.get<Article[]>(`${this.apiUrl}/articles`);
   }
 
+  getUserFeed(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.apiUrl}/articles/user-feed`);
+  }
+
+
   getArticleById(id: number): Observable<Article> {
     return this.http.get<Article>(`${this.apiUrl}/articles/${id}`);
   }

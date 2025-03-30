@@ -10,8 +10,8 @@ import {environment} from "../../../environments/environment";
 })
 
 export class UserService {
-  private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl
+  private http: HttpClient = inject(HttpClient);
+  private apiUrl: string = environment.apiUrl
 
   getCurrentUser(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/users/me`);

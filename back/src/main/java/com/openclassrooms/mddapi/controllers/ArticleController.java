@@ -73,8 +73,6 @@ public class ArticleController {
     }
 
 
-
-
     /**
      * Permet de créer un nouvel article.
      */
@@ -101,6 +99,41 @@ public class ArticleController {
                 List.of()
         ));
     }
+
+    @Operation(
+            summary = "Récupérer les articles de l'utilisateur connecté",
+            description = "Retourne la liste des articles créés par l'utilisateur ou liés à ses abonnements. Nécessite une authentification."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste des articles récupérée avec succès (peut être vide si aucun article)"),
+            @ApiResponse(responseCode = "401", description = "Non authentifié - Token JWT requis"),
+            @ApiResponse(responseCode = "403", description = "Accès interdit - Permissions insuffisantes")
+    })
+    @GetMapping("/user-feed")
+    public ResponseEntity<List<ArticleResponse>> getUserFeed(@AuthenticationPrincipal UserDetails userDetails) {
+        List<Article> articles = articleService.getUserFeed(userDetails.getUsername());
+
+        List<ArticleResponse> responses = articles.stream()
+                .map(article -> new ArticleResponse(
+                        article.getId(),
+                        article.getTitle(),
+                        article.getContent(),
+                        article.getCreatedAt(),
+                        article.getAuthor().getUsername(),
+                        article.getTopic().getName(),
+                        article.getTopic().getId(),
+                        article.getComments().stream()
+                                .map(comment -> new CommentResponse(
+                                        comment.getId(),
+                                        comment.getContent(),
+                                        comment.getAuthor().getUsername(),
+                                        comment.getCreatedAt()
+                                )).collect(Collectors.toList())
+                )).collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
+    }
+
 
     /**
      * Permet de récupérer un article par son ID.

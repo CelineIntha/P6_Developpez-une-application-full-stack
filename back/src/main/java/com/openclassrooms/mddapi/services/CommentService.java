@@ -13,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * Service chargé de la gestion des commentaires liés aux articles.
+ */
 @Service
 public class CommentService {
 
@@ -29,7 +31,14 @@ public class CommentService {
     private UserRepository userRepository;
 
     /**
-     * Ajouter un commentaire à un article.
+     * Ajoute un commentaire à un article existant.
+     * Le commentaire est associé à l'utilisateur authentifié et à l'article ciblé.
+     *
+     * @param articleId  L'identifiant de l'article auquel le commentaire doit être ajouté.
+     * @param commentDto Les données du commentaire à ajouter.
+     * @param username   Le nom d'utilisateur de l'auteur du commentaire.
+     * @return Le commentaire nouvellement créé et enregistré en base de données.
+     * @throws NotFoundException si l'utilisateur ou l'article associé n'existe pas.
      */
     public Comment addComment(Long articleId, CommentDto commentDto, String username) {
         User author = userRepository.findByUsername(username)
@@ -49,5 +58,4 @@ public class CommentService {
         logger.info("Commentaire ajouté à l'article ID : {}", articleId);
         return commentRepository.save(comment);
     }
-
 }

@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service responsable de la gestion des utilisateurs et de l'authentification.
+ */
 @Service
 public class UserService implements UserDetailsService {
 
@@ -20,7 +23,11 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     /**
-     * Charge un utilisateur par son email ou son username pour l'authentification.
+     * Charge un utilisateur par son email ou son nom d'utilisateur pour l'authentification.
+     *
+     * @param usernameOrEmail L'email ou le nom d'utilisateur de l'utilisateur à charger.
+     * @return Les détails de l'utilisateur.
+     * @throws UsernameNotFoundException si aucun utilisateur n'est trouvé avec cet identifiant.
      */
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
@@ -35,7 +42,9 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Sauvegarde ou met à jour un utilisateur.
+     * Sauvegarde ou met à jour un utilisateur en base de données.
+     *
+     * @param user L'utilisateur à sauvegarder.
      */
     public void saveUser(User user) {
         logger.info("Sauvegarde de l'utilisateur : {}", user.getEmail());
@@ -43,7 +52,11 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Recherche un utilisateur par son email.
+     * Recherche un utilisateur par son adresse email.
+     *
+     * @param email L'email de l'utilisateur recherché.
+     * @return L'utilisateur correspondant à l'email.
+     * @throws NotFoundException si aucun utilisateur n'est trouvé avec cet email.
      */
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -51,7 +64,11 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Recherche un utilisateur par son username.
+     * Recherche un utilisateur par son nom d'utilisateur.
+     *
+     * @param username Le nom d'utilisateur de l'utilisateur recherché.
+     * @return L'utilisateur correspondant au nom d'utilisateur.
+     * @throws NotFoundException si aucun utilisateur n'est trouvé avec ce nom.
      */
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -59,17 +76,22 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Vérifie si un utilisateur existe par son email.
+     * Vérifie si un utilisateur existe avec l'email fourni.
+     *
+     * @param email L'email à vérifier.
+     * @return true si un utilisateur existe avec cet email, false sinon.
      */
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
     /**
-     * Vérifie si un utilisateur existe par son nom d'utilisateur.
+     * Vérifie si un utilisateur existe avec le nom d'utilisateur fourni.
+     *
+     * @param username Le nom d'utilisateur à vérifier.
+     * @return true si un utilisateur existe avec ce nom, false sinon.
      */
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
-
 }

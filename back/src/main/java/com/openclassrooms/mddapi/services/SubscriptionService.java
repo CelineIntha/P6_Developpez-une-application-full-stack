@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service responsable de la gestion des abonnements aux thèmes par les utilisateurs.
+ */
 @Service
 public class SubscriptionService {
 
@@ -30,10 +33,12 @@ public class SubscriptionService {
 
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
 
-
-
     /**
-     * Récupérer tous les abonnements d'un utilisateur.
+     * Récupère la liste des abonnements d'un utilisateur.
+     *
+     * @param username Le nom d'utilisateur.
+     * @return La liste des abonnements de l'utilisateur.
+     * @throws NotFoundException si l'utilisateur n'existe pas.
      */
     public List<Subscription> getUserSubscriptions(String username) {
         User user = userRepository.findByUsername(username)
@@ -42,7 +47,13 @@ public class SubscriptionService {
     }
 
     /**
-     * S'abonner à un thème.
+     * Permet à un utilisateur de s'abonner à un thème.
+     *
+     * @param subscriptionDto Les informations concernant l'abonnement (ID du thème).
+     * @param username        Le nom d'utilisateur.
+     * @return L'abonnement nouvellement créé.
+     * @throws NotFoundException si l'utilisateur ou le thème n'existe pas.
+     * @throws ConflictException si l'utilisateur est déjà abonné au thème.
      */
     public Subscription subscribeToTopic(SubscriptionDto subscriptionDto, String username) {
         User user = userRepository.findByUsername(username)
@@ -63,7 +74,11 @@ public class SubscriptionService {
     }
 
     /**
-     * Se désabonner d’un thème.
+     * Permet à un utilisateur de se désabonner d’un thème.
+     *
+     * @param topicId  L'identifiant du thème à désabonner.
+     * @param username Le nom d'utilisateur.
+     * @throws NotFoundException si l'utilisateur, le thème ou l'abonnement n'existe pas.
      */
     public void unsubscribeFromTopic(Long topicId, String username) {
 
@@ -88,5 +103,5 @@ public class SubscriptionService {
         subscriptionRepository.delete(subscription);
         logger.info("Utilisateur {} désabonné du thème avec ID : {}", username, topicId);
     }
-
 }
+
