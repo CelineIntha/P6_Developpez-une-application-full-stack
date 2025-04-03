@@ -47,9 +47,7 @@ To install and run the project, follow these steps:
 
 #### 🗄 Database (MySQL)
 
-You can also set up the database schema and run the SQL script available at:
-
-> ressources/sql/script.sql
+You can also set up the database schema and run the SQL script
 
 **Default admin account credentials:**
 - **Email**: `celine@email.com`
