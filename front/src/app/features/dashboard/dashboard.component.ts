@@ -40,8 +40,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
-
   toggleSortOrder(): void {
     this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
 

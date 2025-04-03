@@ -14,11 +14,7 @@ import {UserProfileComponent} from "./features/user-profile/user-profile.compone
 // consider a guard combined with canLoad / canActivate route option
 // to manage unauthenticated user to access private routes
 export const routes: Routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    canActivate: [guestGuard],
-  },
+  {path: '', component: HomeComponent, canActivate: [guestGuard],},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},

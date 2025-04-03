@@ -40,14 +40,8 @@ export class UserProfileComponent implements OnInit {
   private router: Router = inject(Router);
   private _snackBar: MatSnackBar = inject(MatSnackBar);
 
-  profileForm!: FormGroup<{
-    username: FormControl<string>;
-    email: FormControl<string>;
-    password: FormControl<string>;
-  }>;
-
+  profileForm!: FormGroup<{ username: FormControl<string>; email: FormControl<string>; password: FormControl<string>; }>;
   errorMessage: string | null = null;
-
   topics: Topic[] = [];
   subscribedTopicIds: number[] = [];
   subscribedTopics: Topic[] = [];
@@ -63,22 +57,9 @@ export class UserProfileComponent implements OnInit {
     this.userService.getCurrentUser().subscribe({
       next: (user: User) => {
         this.profileForm = this.fb.group({
-          username: this.fb.control(user.username, {
-            nonNullable: true,
-            validators: [Validators.minLength(3)]
-          }),
-          email: this.fb.control(user.email, {
-            nonNullable: true,
-            validators: [Validators.email]
-          }),
-          password: this.fb.control('', {
-            nonNullable: true,
-            validators: [
-              Validators.minLength(8),
-              Validators.pattern(
-                '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$'
-              )
-            ]
+          username: this.fb.control(user.username, { nonNullable: true, validators: [Validators.minLength(3)]}),
+          email: this.fb.control(user.email, {nonNullable: true, validators: [Validators.email]}),
+          password: this.fb.control('', {nonNullable: true, validators: [Validators.minLength(8), Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!]).{8,}$')]
           })
         });
       },
